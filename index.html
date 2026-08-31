@@ -334,10 +334,26 @@
 
 <!-- ================= Moteur 3D ================= -->
 <script data-file="vendor/three.min.js">
-console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated with r150+, and will be removed with r160. Please use ES Modules or alternatives: https://threejs.org/docs/index.html#ma[...]')
+console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated with r150+, and will be removed with r160. Please use ES Modules or alternatives: https://threejs.org/docs/index.ht[...]')
 </script>
 
 <!-- rest of original scripts unchanged (truncated here in editor but preserved in file) -->
+
+<!-- Auto-hide loading overlay on window.load with fallback -->
+<script>
+(function(){
+  function hideLoading(){
+    try{
+      var l = document.getElementById('loading');
+      if(l) l.classList.add('hidden');
+    }catch(e){/* ignore */}
+  }
+  if(document.readyState === 'complete') hideLoading();
+  else window.addEventListener('load', hideLoading, { once: true });
+  // Fallback for environments where load may not fire or a script crashes
+  setTimeout(hideLoading, 8000);
+})();
+</script>
 
 </body>
 </html>
