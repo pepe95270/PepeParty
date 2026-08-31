@@ -149,9 +149,10 @@
   }
   .mc-action.active { transform: translateY(1px); box-shadow: 0 1px 0 rgba(0,0,0,0.6) inset; }
 
-  /* Diagnostics overlay */
-  #diag { position: fixed; left: 8px; top: 8px; z-index: 10001; background: rgba(0,0,0,0.65); color: #fff; padding: 8px 10px; border-radius: 8px; font-size: 12px; max-width: 45%; max-height: 60vh; overflow: auto; }
+  /* Diagnostics overlay (non-intrusive) */
+  #diag { position: fixed; left: 8px; top: 8px; z-index: 10001; background: rgba(0,0,0,0.55); color: #fff; padding: 6px 8px; border-radius: 8px; font-size: 12px; max-width: 46%; max-height: 60vh; overflow: auto; pointer-events: auto; }
   #diag .line { margin-bottom: 6px; }
+  #diag small { display:block; color: #9fb6e8; margin-top:4px; }
 </style>
 </head>
 <body>
@@ -172,7 +173,7 @@
   </div>
 </div>
 
-<!-- Mobile controller UI inserted -->
+<!-- Mobile controller UI inserted (hidden by default to avoid interfering) -->
 <div id="mobile-controller" class="hidden" aria-hidden="true">
   <div id="mc-join">
     <button id="mc-join-btn">Rejoindre comme contrôleur</button>
@@ -192,7 +193,7 @@
 
 <div id="err"></div>
 
-<div id="diag" aria-hidden="false"></div>
+<div id="diag" aria-hidden="false" style="display:none"></div>
 
 <script>
   // Rapport d'erreur visible : indispensable sans console ouverte.
@@ -212,7 +213,7 @@
   })();
 </script>
 
-<!-- Mobile controller JS (auto-init) -->
+<!-- Mobile controller JS (auto-init disabled to avoid interfering); safe to call window.initMobileController() manually -->
 <script>
 (function () {
   const storageKey = 'pepeParty_mobileControllerAssigned';
@@ -223,118 +224,127 @@
   }
 
   function dispatchControlEvent(detail) {
-    window.dispatchEvent(new CustomEvent('pepe-mobile-controller', { detail }));
+    try { window.dispatchEvent(new CustomEvent('pepe-mobile-controller', { detail })); } catch(e){}
   }
 
   function initMobileController(opts = {}) {
-    const root = document.getElementById('mobile-controller');
-    if (!root) return;
-    const joinBtn = document.getElementById('mc-join-btn');
-    const mcUI = document.getElementById('mc-ui');
-    const mcJoin = document.getElementById('mc-join');
+    try {
+      const root = document.getElementById('mobile-controller');
+      if (!root) return;
+      // keep UI hidden by default to avoid blocking rendering; caller can unhide
+      if (!isMobile()) { root.classList.add('hidden'); return; }
 
-    if (!isMobile()) {
-      root.classList.add('hidden');
-      return;
-    }
-    root.classList.remove('hidden');
+      const joinBtn = document.getElementById('mc-join-btn');
+      const mcUI = document.getElementById('mc-ui');
+      const mcJoin = document.getElementById('mc-join');
 
-    const alreadyAssigned = !!localStorage.getItem(storageKey);
-    if (alreadyAssigned) {
-      mcJoin.style.display = 'none';
-      mcUI.classList.remove('hidden');
-      root.setAttribute('aria-hidden', 'false');
-    }
-
-    joinBtn.addEventListener('click', () => {
-      localStorage.setItem(storageKey, Date.now().toString());
-      mcJoin.style.display = 'none';
-      mcUI.classList.remove('hidden');
-      root.setAttribute('aria-hidden', 'false');
-      dispatchControlEvent({ type: 'joined', timestamp: Date.now() });
-      if (opts.onJoin) opts.onJoin();
-    });
-
-    // Joystick handling
-    const joystick = document.getElementById('mc-joystick');
-    let activeId = null;
-    function getPosFromTouch(t) {
-      const rect = joystick.getBoundingClientRect();
-      return { x: t.clientX - (rect.left + rect.width/2), y: t.clientY - (rect.top + rect.height/2) };
-    }
-    function norm(vx, vy) {
-      const max = 50;
-      return { x: Math.max(-1, Math.min(1, vx / max)), y: Math.max(-1, Math.min(1, vy / max)) };
-    }
-
-    joystick.addEventListener('touchstart', (e) => {
-      e.preventDefault();
-      const t = e.changedTouches[0];
-      activeId = t.identifier;
-      const origin = getPosFromTouch(t);
-      dispatchControlEvent({ type: 'joystick-start', origin });
-      if (opts.onEvent) opts.onEvent({ type: 'joystick-start', origin });
-    }, { passive: false });
-
-    joystick.addEventListener('touchmove', (e) => {
-      e.preventDefault();
-      if (activeId === null) return;
-      for (let i=0;i<e.changedTouches.length;i++){
-        const t = e.changedTouches[i];
-        if (t.identifier === activeId) {
-          const pos = getPosFromTouch(t);
-          const n = norm(pos.x, pos.y);
-          dispatchControlEvent({ type: 'joystick', x: n.x, y: n.y });
-          if (opts.onEvent) opts.onEvent({ type: 'joystick', x: n.x, y: n.y });
-        }
+      // do not force show; let caller decide
+      // if already assigned, show UI
+      const alreadyAssigned = !!localStorage.getItem(storageKey);
+      if (alreadyAssigned) {
+        mcJoin.style.display = 'none';
+        mcUI.classList.remove('hidden');
+        root.classList.remove('hidden');
+        root.setAttribute('aria-hidden', 'false');
       }
-    }, { passive: false });
 
-    joystick.addEventListener('touchend', (e) => {
-      e.preventDefault();
-      for (let i=0;i<e.changedTouches.length;i++){
-        const t = e.changedTouches[i];
-        if (t.identifier === activeId) {
-          activeId = null;
-          dispatchControlEvent({ type: 'joystick-end' });
-          if (opts.onEvent) opts.onEvent({ type: 'joystick-end' });
-        }
+      joinBtn && joinBtn.addEventListener('click', () => {
+        localStorage.setItem(storageKey, Date.now().toString());
+        mcJoin.style.display = 'none';
+        mcUI.classList.remove('hidden');
+        root.classList.remove('hidden');
+        root.setAttribute('aria-hidden', 'false');
+        dispatchControlEvent({ type: 'joined', timestamp: Date.now() });
+        if (opts.onJoin) opts.onJoin();
+      });
+
+      // Joystick handling (safe guards)
+      const joystick = document.getElementById('mc-joystick');
+      let activeId = null;
+      function getPosFromTouch(t) {
+        const rect = joystick.getBoundingClientRect();
+        return { x: t.clientX - (rect.left + rect.width/2), y: t.clientY - (rect.top + rect.height/2) };
       }
-    }, { passive: false });
+      function norm(vx, vy) {
+        const max = 50;
+        return { x: Math.max(-1, Math.min(1, vx / max)), y: Math.max(-1, Math.min(1, vy / max)) };
+      }
 
-    // Buttons
-    document.querySelectorAll('.mc-action').forEach(btn => {
-      const action = btn.getAttribute('data-action');
-      btn.addEventListener('touchstart', (e) => {
-        e.preventDefault();
-        btn.classList.add('active');
-        dispatchControlEvent({ type: 'button-down', action });
-        if (opts.onEvent) opts.onEvent({ type: 'button-down', action });
-      }, { passive: false });
-      btn.addEventListener('touchend', (e) => {
-        e.preventDefault();
-        btn.classList.remove('active');
-        dispatchControlEvent({ type: 'button-up', action });
-        if (opts.onEvent) opts.onEvent({ type: 'button-up', action });
-      }, { passive: false });
-      btn.addEventListener('touchcancel', (e) => {
-        e.preventDefault();
-        btn.classList.remove('active');
-        dispatchControlEvent({ type: 'button-up', action });
-        if (opts.onEvent) opts.onEvent({ type: 'button-up', action });
-      }, { passive: false });
-    });
+      if (joystick) {
+        joystick.addEventListener('touchstart', (e) => {
+          e.preventDefault();
+          const t = e.changedTouches[0];
+          activeId = t.identifier;
+          const origin = getPosFromTouch(t);
+          dispatchControlEvent({ type: 'joystick-start', origin });
+          if (opts.onEvent) opts.onEvent({ type: 'joystick-start', origin });
+        }, { passive: false });
 
-    return {
-      isAssigned: () => !!localStorage.getItem(storageKey),
-      release: () => localStorage.removeItem(storageKey)
-    };
+        joystick.addEventListener('touchmove', (e) => {
+          e.preventDefault();
+          if (activeId === null) return;
+          for (let i=0;i<e.changedTouches.length;i++){
+            const t = e.changedTouches[i];
+            if (t.identifier === activeId) {
+              const pos = getPosFromTouch(t);
+              const n = norm(pos.x, pos.y);
+              dispatchControlEvent({ type: 'joystick', x: n.x, y: n.y });
+              if (opts.onEvent) opts.onEvent({ type: 'joystick', x: n.x, y: n.y });
+            }
+          }
+        }, { passive: false });
+
+        joystick.addEventListener('touchend', (e) => {
+          e.preventDefault();
+          for (let i=0;i<e.changedTouches.length;i++){
+            const t = e.changedTouches[i];
+            if (t.identifier === activeId) {
+              activeId = null;
+              dispatchControlEvent({ type: 'joystick-end' });
+              if (opts.onEvent) opts.onEvent({ type: 'joystick-end' });
+            }
+          }
+        }, { passive: false });
+      }
+
+      // Buttons
+      document.querySelectorAll('.mc-action').forEach(btn => {
+        const action = btn.getAttribute('data-action');
+        btn.addEventListener('touchstart', (e) => {
+          e.preventDefault();
+          btn.classList.add('active');
+          dispatchControlEvent({ type: 'button-down', action });
+          if (opts.onEvent) opts.onEvent({ type: 'button-down', action });
+        }, { passive: false });
+        btn.addEventListener('touchend', (e) => {
+          e.preventDefault();
+          btn.classList.remove('active');
+          dispatchControlEvent({ type: 'button-up', action });
+          if (opts.onEvent) opts.onEvent({ type: 'button-up', action });
+        }, { passive: false });
+        btn.addEventListener('touchcancel', (e) => {
+          e.preventDefault();
+          btn.classList.remove('active');
+          dispatchControlEvent({ type: 'button-up', action });
+          if (opts.onEvent) opts.onEvent({ type: 'button-up', action });
+        }, { passive: false });
+      });
+
+      // return simple API
+      return {
+        isAssigned: () => !!localStorage.getItem(storageKey),
+        release: () => localStorage.removeItem(storageKey),
+        showUI: () => { const r=document.getElementById('mobile-controller'); if(r) r.classList.remove('hidden'); }
+      };
+    } catch (err) {
+      // ensure controller init never throws and blocks other scripts
+      try { document.getElementById('mobile-controller') && document.getElementById('mobile-controller').classList.add('hidden'); } catch(e){}
+      return null;
+    }
   }
 
-  if (typeof window !== 'undefined') {
-    window.initMobileController = initMobileController;
-    document.addEventListener('DOMContentLoaded', () => { initMobileController(); });
-  }
+  // expose but DO NOT auto-init to avoid interfering with rendering.
+  if (typeof window !== 'undefined') window.initMobileController = initMobileController;
 })();
 </script>
 
@@ -361,40 +371,37 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
 })();
 </script>
 
-<!-- Diagnostics script: show runtime status & create fallback canvas if no renderer found -->
+<!-- Non-intrusive diagnostics & visible init steps (disabled by default) -->
 <script>
 (function(){
-  function logLine(k,v){ const d = document.getElementById('diag'); if(!d) return; const el=document.createElement('div'); el.className='line'; el.textContent = k+': '+v; d.appendChild(el); }
-  function clearDiag(){ const d=document.getElementById('diag'); if(d) d.innerHTML=''; }
-  function createFallbackCanvas(){ try{
-    const game=document.getElementById('game');
-    if(!game) return false;
-    // if there's already a canvas, do nothing
-    if(game.querySelector('canvas')) return false;
-    const fb=document.createElement('canvas'); fb.width=window.innerWidth; fb.height=window.innerHeight; fb.style.width='100%'; fb.style.height='100%';
-    fb.style.display='block'; fb.style.background='#000'; fb.style.zIndex='1';
-    const ctx=fb.getContext('2d'); ctx.fillStyle='#fff'; ctx.font='20px sans-serif'; ctx.textAlign='center';
-    ctx.fillText('Aucun renderer détecté', fb.width/2, fb.height/2 - 10);
-    ctx.font='14px sans-serif'; ctx.fillText('Vérifie la console ou contacte dev', fb.width/2, fb.height/2 + 20);
-    game.appendChild(fb);
-    return true;
-  }catch(e){return false;} }
-  function status(){ try{
+  // Enable diagnostics & mobile controller manually by setting these flags in the console or via a bookmarklet
+  // e.g. window.__pp_enable_diag = true; window.__pp_enable_mobile = true;
+  const diagEnabled = !!window.__pp_enable_diag;
+  const diag = document.getElementById('diag');
+  function showDiag(){ if(!diagEnabled) return; if(!diag) return; diag.style.display='block'; }
+  function logLine(k,v){ if(!diagEnabled) return; if(!diag) return; const el=document.createElement('div'); el.className='line'; el.textContent = k+': '+v; diag.appendChild(el); }
+  function clearDiag(){ if(!diagEnabled) return; if(!diag) return; diag.innerHTML=''; }
+
+  function statusOnce(){ try{
+    if(!diagEnabled) return;
     clearDiag();
-    logLine('UA', navigator.userAgent.slice(0,80));
+    logLine('UA', navigator.userAgent.slice(0,120));
     logLine('readyState', document.readyState);
     logLine('THREE', typeof THREE);
     logLine('MP', typeof MP);
     const game=document.getElementById('game'); logLine('game elem', !!game);
     const canvas = game ? game.querySelector('canvas') : null; logLine('canvas present', !!canvas);
-    if(canvas){ logLine('canvas size', canvas.width+'x'+canvas.height+' css:'+canvas.clientWidth+'x'+canvas.clientHeight); }
-    else { const created = createFallbackCanvas(); logLine('fallback canvas', created ? 'created' : 'not created'); }
     const err=document.getElementById('err'); if(err && err.style.display!=='none'){ logLine('ERRORS', err.textContent.slice(0,300)); }
-  }catch(e){/* ignore */} }
-  window.addEventListener('load', status);
-  setTimeout(status, 1200);
-  // tap to hide/show
-  const d=document.getElementById('diag'); if(d){ d.addEventListener('click', ()=>{ d.style.display = d.style.display==='none' ? 'block' : 'none'; }); }
+    // show small hint to user
+    if(diag) { const s=document.createElement('small'); s.textContent='Diag active — tape ici pour fermer'; diag.appendChild(s); diag.addEventListener('click', ()=>{ diag.style.display='none'; }); }
+  }catch(e){}
+  }
+
+  // do not auto-create fallback canvas (it can cover the real renderer). Only show diagnostics if explicitly enabled.
+  window.addEventListener('load', statusOnce);
+  setTimeout(statusOnce, 1200);
+  // expose helper to manually show more diagnostics
+  window.PP_showDiag = function(){ window.__pp_enable_diag = true; showDiag(); statusOnce(); };
 })();
 </script>
 
