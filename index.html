@@ -148,6 +148,10 @@
     -webkit-tap-highlight-color: transparent;
   }
   .mc-action.active { transform: translateY(1px); box-shadow: 0 1px 0 rgba(0,0,0,0.6) inset; }
+
+  /* Diagnostics overlay */
+  #diag { position: fixed; left: 8px; top: 8px; z-index: 10001; background: rgba(0,0,0,0.65); color: #fff; padding: 8px 10px; border-radius: 8px; font-size: 12px; max-width: 45%; max-height: 60vh; overflow: auto; }
+  #diag .line { margin-bottom: 6px; }
 </style>
 </head>
 <body>
@@ -187,6 +191,8 @@
 </div>
 
 <div id="err"></div>
+
+<div id="diag" aria-hidden="false"></div>
 
 <script>
   // Rapport d'erreur visible : indispensable sans console ouverte.
@@ -352,6 +358,43 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
   else window.addEventListener('load', hideLoading, { once: true });
   // Fallback for environments where load may not fire or a script crashes
   setTimeout(hideLoading, 8000);
+})();
+</script>
+
+<!-- Diagnostics script: show runtime status & create fallback canvas if no renderer found -->
+<script>
+(function(){
+  function logLine(k,v){ const d = document.getElementById('diag'); if(!d) return; const el=document.createElement('div'); el.className='line'; el.textContent = k+': '+v; d.appendChild(el); }
+  function clearDiag(){ const d=document.getElementById('diag'); if(d) d.innerHTML=''; }
+  function createFallbackCanvas(){ try{
+    const game=document.getElementById('game');
+    if(!game) return false;
+    // if there's already a canvas, do nothing
+    if(game.querySelector('canvas')) return false;
+    const fb=document.createElement('canvas'); fb.width=window.innerWidth; fb.height=window.innerHeight; fb.style.width='100%'; fb.style.height='100%';
+    fb.style.display='block'; fb.style.background='#000'; fb.style.zIndex='1';
+    const ctx=fb.getContext('2d'); ctx.fillStyle='#fff'; ctx.font='20px sans-serif'; ctx.textAlign='center';
+    ctx.fillText('Aucun renderer détecté', fb.width/2, fb.height/2 - 10);
+    ctx.font='14px sans-serif'; ctx.fillText('Vérifie la console ou contacte dev', fb.width/2, fb.height/2 + 20);
+    game.appendChild(fb);
+    return true;
+  }catch(e){return false;} }
+  function status(){ try{
+    clearDiag();
+    logLine('UA', navigator.userAgent.slice(0,80));
+    logLine('readyState', document.readyState);
+    logLine('THREE', typeof THREE);
+    logLine('MP', typeof MP);
+    const game=document.getElementById('game'); logLine('game elem', !!game);
+    const canvas = game ? game.querySelector('canvas') : null; logLine('canvas present', !!canvas);
+    if(canvas){ logLine('canvas size', canvas.width+'x'+canvas.height+' css:'+canvas.clientWidth+'x'+canvas.clientHeight); }
+    else { const created = createFallbackCanvas(); logLine('fallback canvas', created ? 'created' : 'not created'); }
+    const err=document.getElementById('err'); if(err && err.style.display!=='none'){ logLine('ERRORS', err.textContent.slice(0,300)); }
+  }catch(e){/* ignore */} }
+  window.addEventListener('load', status);
+  setTimeout(status, 1200);
+  // tap to hide/show
+  const d=document.getElementById('diag'); if(d){ d.addEventListener('click', ()=>{ d.style.display = d.style.display==='none' ? 'block' : 'none'; }); }
 })();
 </script>
 
