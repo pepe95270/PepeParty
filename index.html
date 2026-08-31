@@ -63,96 +63,6 @@
     background: #1a0808; color: #ffb0b0; padding: 30px; overflow: auto;
     font-family: monospace; font-size: 13px; white-space: pre-wrap; line-height: 1.5;
   }
-
-  /* === Mobile controller styles (added) === */
-  #mobile-controller {
-    position: fixed;
-    inset: 0;
-    pointer-events: none;
-    z-index: 9999;
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
-    padding: 12px;
-  }
-  #mobile-controller.hidden { display: none; }
-
-  #mc-join {
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-    bottom: 18vh;
-    pointer-events: auto;
-  }
-  #mc-join-btn {
-    font-size: 18px;
-    padding: 10px 16px;
-    border-radius: 8px;
-    background: rgba(0,0,0,0.55);
-    color: #fff;
-    border: 1px solid rgba(255,255,255,0.08);
-    backdrop-filter: blur(4px);
-  }
-
-  .mc-panel {
-    width: 45%;
-    height: 36vh;
-    pointer-events: auto;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  #mc-left, #mc-right {
-    background: rgba(0,0,0,0.28);
-    border-radius: 14px;
-    margin: 6px;
-    touch-action: none;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    justify-content:center;
-  }
-
-  .mc-joystick {
-    width: 120px;
-    height: 120px;
-    background: rgba(255,255,255,0.06);
-    border-radius: 50%;
-    position: relative;
-    box-shadow: inset 0 0 30px rgba(0,0,0,0.4);
-  }
-  .mc-joystick::after {
-    content: "";
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    width: 44px;
-    height: 44px;
-    transform: translate(-50%,-50%);
-    background: rgba(255,255,255,0.12);
-    border-radius: 50%;
-  }
-
-  .mc-action {
-    display: block;
-    margin: 8px;
-    padding: 14px 18px;
-    font-size: 16px;
-    border-radius: 12px;
-    background: rgba(255,255,255,0.12);
-    color: #fff;
-    border: none;
-    min-width: 110px;
-    text-align:center;
-    -webkit-tap-highlight-color: transparent;
-  }
-  .mc-action.active { transform: translateY(1px); box-shadow: 0 1px 0 rgba(0,0,0,0.6) inset; }
-
-  /* Diagnostics overlay (non-intrusive) */
-  #diag { position: fixed; left: 8px; top: 8px; z-index: 10001; background: rgba(0,0,0,0.55); color: #fff; padding: 6px 8px; border-radius: 8px; font-size: 12px; max-width: 46%; max-height: 60vh; overflow: auto; pointer-events: auto; }
-  #diag .line { margin-bottom: 6px; }
-  #diag small { display:block; color: #9fb6e8; margin-top:4px; }
 </style>
 </head>
 <body>
@@ -173,27 +83,7 @@
   </div>
 </div>
 
-<!-- Mobile controller UI inserted (hidden by default to avoid interfering) -->
-<div id="mobile-controller" class="hidden" aria-hidden="true">
-  <div id="mc-join">
-    <button id="mc-join-btn">Rejoindre comme contrôleur</button>
-  </div>
-
-  <div id="mc-ui" class="hidden" style="width:100%;display:flex;justify-content:space-between;align-items:flex-end;">
-    <div id="mc-left" class="mc-panel" aria-hidden="false">
-      <div id="mc-joystick" class="mc-joystick" role="application" aria-label="Joystick"></div>
-    </div>
-
-    <div id="mc-right" class="mc-panel" aria-hidden="false">
-      <button class="mc-action" data-action="jump">Saut</button>
-      <button class="mc-action" data-action="action">Action</button>
-    </div>
-  </div>
-</div>
-
 <div id="err"></div>
-
-<div id="diag" aria-hidden="false" style="display:none"></div>
 
 <script>
   // Rapport d'erreur visible : indispensable sans console ouverte.
@@ -213,197 +103,398 @@
   })();
 </script>
 
-<!-- Mobile controller JS (auto-init disabled to avoid interfering); safe to call window.initMobileController() manually -->
-<script>
-(function () {
-  const storageKey = 'pepeParty_mobileControllerAssigned';
-
-  function isMobile() {
-    return /Mobi|Android|iPhone|iPad|iPod|Opera Mini|IEMobile/i.test(navigator.userAgent)
-      || (window.matchMedia && window.matchMedia('(pointer: coarse)').matches);
-  }
-
-  function dispatchControlEvent(detail) {
-    try { window.dispatchEvent(new CustomEvent('pepe-mobile-controller', { detail })); } catch(e){}
-  }
-
-  function initMobileController(opts = {}) {
-    try {
-      const root = document.getElementById('mobile-controller');
-      if (!root) return;
-      // keep UI hidden by default to avoid blocking rendering; caller can unhide
-      if (!isMobile()) { root.classList.add('hidden'); return; }
-
-      const joinBtn = document.getElementById('mc-join-btn');
-      const mcUI = document.getElementById('mc-ui');
-      const mcJoin = document.getElementById('mc-join');
-
-      // do not force show; let caller decide
-      // if already assigned, show UI
-      const alreadyAssigned = !!localStorage.getItem(storageKey);
-      if (alreadyAssigned) {
-        mcJoin.style.display = 'none';
-        mcUI.classList.remove('hidden');
-        root.classList.remove('hidden');
-        root.setAttribute('aria-hidden', 'false');
-      }
-
-      joinBtn && joinBtn.addEventListener('click', () => {
-        localStorage.setItem(storageKey, Date.now().toString());
-        mcJoin.style.display = 'none';
-        mcUI.classList.remove('hidden');
-        root.classList.remove('hidden');
-        root.setAttribute('aria-hidden', 'false');
-        dispatchControlEvent({ type: 'joined', timestamp: Date.now() });
-        if (opts.onJoin) opts.onJoin();
-      });
-
-      // Joystick handling (safe guards)
-      const joystick = document.getElementById('mc-joystick');
-      let activeId = null;
-      function getPosFromTouch(t) {
-        const rect = joystick.getBoundingClientRect();
-        return { x: t.clientX - (rect.left + rect.width/2), y: t.clientY - (rect.top + rect.height/2) };
-      }
-      function norm(vx, vy) {
-        const max = 50;
-        return { x: Math.max(-1, Math.min(1, vx / max)), y: Math.max(-1, Math.min(1, vy / max)) };
-      }
-
-      if (joystick) {
-        joystick.addEventListener('touchstart', (e) => {
-          e.preventDefault();
-          const t = e.changedTouches[0];
-          activeId = t.identifier;
-          const origin = getPosFromTouch(t);
-          dispatchControlEvent({ type: 'joystick-start', origin });
-          if (opts.onEvent) opts.onEvent({ type: 'joystick-start', origin });
-        }, { passive: false });
-
-        joystick.addEventListener('touchmove', (e) => {
-          e.preventDefault();
-          if (activeId === null) return;
-          for (let i=0;i<e.changedTouches.length;i++){
-            const t = e.changedTouches[i];
-            if (t.identifier === activeId) {
-              const pos = getPosFromTouch(t);
-              const n = norm(pos.x, pos.y);
-              dispatchControlEvent({ type: 'joystick', x: n.x, y: n.y });
-              if (opts.onEvent) opts.onEvent({ type: 'joystick', x: n.x, y: n.y });
-            }
-          }
-        }, { passive: false });
-
-        joystick.addEventListener('touchend', (e) => {
-          e.preventDefault();
-          for (let i=0;i<e.changedTouches.length;i++){
-            const t = e.changedTouches[i];
-            if (t.identifier === activeId) {
-              activeId = null;
-              dispatchControlEvent({ type: 'joystick-end' });
-              if (opts.onEvent) opts.onEvent({ type: 'joystick-end' });
-            }
-          }
-        }, { passive: false });
-      }
-
-      // Buttons
-      document.querySelectorAll('.mc-action').forEach(btn => {
-        const action = btn.getAttribute('data-action');
-        btn.addEventListener('touchstart', (e) => {
-          e.preventDefault();
-          btn.classList.add('active');
-          dispatchControlEvent({ type: 'button-down', action });
-          if (opts.onEvent) opts.onEvent({ type: 'button-down', action });
-        }, { passive: false });
-        btn.addEventListener('touchend', (e) => {
-          e.preventDefault();
-          btn.classList.remove('active');
-          dispatchControlEvent({ type: 'button-up', action });
-          if (opts.onEvent) opts.onEvent({ type: 'button-up', action });
-        }, { passive: false });
-        btn.addEventListener('touchcancel', (e) => {
-          e.preventDefault();
-          btn.classList.remove('active');
-          dispatchControlEvent({ type: 'button-up', action });
-          if (opts.onEvent) opts.onEvent({ type: 'button-up', action });
-        }, { passive: false });
-      });
-
-      // return simple API
-      return {
-        isAssigned: () => !!localStorage.getItem(storageKey),
-        release: () => localStorage.removeItem(storageKey),
-        showUI: () => { const r=document.getElementById('mobile-controller'); if(r) r.classList.remove('hidden'); }
-      };
-    } catch (err) {
-      // ensure controller init never throws and blocks other scripts
-      try { document.getElementById('mobile-controller') && document.getElementById('mobile-controller').classList.add('hidden'); } catch(e){}
-      return null;
-    }
-  }
-
-  // expose but DO NOT auto-init to avoid interfering with rendering.
-  if (typeof window !== 'undefined') window.initMobileController = initMobileController;
-})();
-</script>
-
 <!-- ================= Moteur 3D ================= -->
 <script data-file="vendor/three.min.js">
-console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated with r150+, and will be removed with r160. Please use ES Modules or alternatives: https://threejs.org/docs/index.ht[...]')
+console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated with r150+, and will be removed with r160. Please use ES Modules or alternatives: https://threejs.org/docs/index.html#ma[...]
+/**
+ * @license
+ * Copyright 2010-2023 Three.js Authors
+ * SPDX-License-Identifier: MIT
+ */
+!function(t,e){"object"==typeof exports&&"undefined"!=typeof module?e(exports):"function"==typeof define&&define.amd?define(["exports"],e):e((t="undefined"!=typeof globalThis?globalThis:t||self).THREE|| (t.THREE = {}));
 </script>
 
-<!-- rest of original scripts unchanged (truncated here in editor but preserved in file) -->
 
-<!-- Auto-hide loading overlay on window.load with fallback -->
-<script>
-(function(){
-  function hideLoading(){
-    try{
-      var l = document.getElementById('loading');
-      if(l) l.classList.add('hidden');
-    }catch(e){/* ignore */}
+<!-- ================= Noyau ================= -->
+<script data-file="src/core/util.js">
+/* =========================================================================
+   MP64 — Utilitaires généraux
+   ========================================================================= */
+(function (MP) {
+  'use strict';
+
+  const U = MP.Util = {};
+
+  /* ------------------------------------------------- identifiants Three.js
+     Three.js tire un UUID au hasard pour chaque objet créé — géométrie,
+     matériau, texture, sprite. C'est sans conséquence hors ligne ; en ligne,
+     c'est fatal : la logique d'un mini-jeu tourne sous un générateur commun
+     à toutes les machines, et créer un objet depuis cette logique (une pièce
+     qui jaillit, une gerbe de particules) y consommerait des tirages. Or le
+     nombre d'objets créés dépend du temps réel — le réservoir de particules
+     se vide plus ou moins vite selon la machine. Le flux commun se
+     décalerait, et la partie entière divergerait à cause d'un nuage de
+     poussière.
+
+     Le générateur interne de Three.js a donc été rendu déterministe
+     directement dans vendor/three.min.js (chercher « MP64-PATCH ») : un
+     UUID n'a besoin que d'être unique au sein de cette page. À réappliquer
+     en cas de mise à jour de la bibliothèque.                              */
+
+  U.TAU = Math.PI * 2;
+  U.DEG = Math.PI / 180;
+
+  U.clamp = (v, a, b) => (v < a ? a : v > b ? b : v);
+  U.lerp = (a, b, t) => a + (b - a) * t;
+  U.inv = (a, b, v) => (b - a === 0 ? 0 : (v - a) / (b - a));
+  U.smooth = (t) => t * t * (3 - 2 * t);
+  U.smoother = (t) => t * t * t * (t * (t * 6 - 15) + 10);
+  U.sign = (v) => (v < 0 ? -1 : v > 0 ? 1 : 0);
+
+  /** Interpolation exponentielle indépendante du framerate. */
+  U.damp = (a, b, lambda, dt) => U.lerp(a, b, 1 - Math.exp(-lambda * dt));
+
+  /** Approche `b` depuis `a` d'au plus `maxStep`. */
+  U.approach = (a, b, maxStep) => {
+    const d = b - a;
+    if (Math.abs(d) <= maxStep) return b;
+    return a + Math.sign(d) * maxStep;
+  };
+
+  /** Différence d'angle la plus courte, dans (-PI, PI]. */
+  U.angDiff = (a, b) => {
+    let d = (b - a) % U.TAU;
+    if (d > Math.PI) d -= U.TAU;
+    if (d < -Math.PI) d += U.TAU;
+    return d;
+  };
+
+  U.angLerp = (a, b, t) => a + U.angDiff(a, b) * t;
+  U.angDamp = (a, b, lambda, dt) => a + U.angDiff(a, b) * (1 - Math.exp(-lambda * dt));
+
+  // ---------------------------------------------------------------- easing
+  U.ease = {
+    linear: (t) => t,
+    inQuad: (t) => t * t,
+    outQuad: (t) => t * (2 - t),
+    inOutQuad: (t) => (t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t),
+    inCubic: (t) => t * t * t,
+    outCubic: (t) => --t * t * t + 1,
+    inOutCubic: (t) => (t < 0.5 ? 4 * t * t * t : (t - 1) * (2 * t - 2) * (2 * t - 2) + 1),
+    outBack: (t) => { const c = 1.70158; return 1 + (c + 1) * Math.pow(t - 1, 3) + c * Math.pow(t - 1, 2); },
+    outElastic: (t) => {
+      if (t === 0 || t === 1) return t;
+      const p = 0.35;
+      return Math.pow(2, -10 * t) * Math.sin(((t - p / 4) * U.TAU) / p) + 1;
+    },
+    outBounce: (t) => {
+      const n = 7.5625, d = 2.75;
+      if (t < 1 / d) return n * t * t;
+      if (t < 2 / d) return n * (t -= 1.5 / d) * t + 0.75;
+      if (t < 2.5 / d) return n * (t -= 2.25 / d) * t + 0.9375;
+      return n * (t -= 2.625 / d) * t + 0.984375;
+    },
+  };
+
+  // ------------------------------------------------------------------ RNG
+  /** Générateur déterministe (mulberry32). */
+  U.rng = function (seed) {
+    let a = (seed >>> 0) || 0x2f6e2b1;
+    const f = function () {
+      a |= 0; a = (a + 0x6D2B79F5) | 0;
+      let t = Math.imul(a ^ (a >>> 15), 1 | a);
+      t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+    f.range = (lo, hi) => lo + f() * (hi - lo);
+    f.int = (lo, hi) => Math.floor(lo + f() * (hi - lo + 1));
+    f.pick = (arr) => arr[Math.floor(f() * arr.length)];
+    f.chance = (p) => f() < p;
+    f.shuffle = (arr) => {
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(f() * (i + 1));
+        const t = arr[i]; arr[i] = arr[j]; arr[j] = t;
+      }
+      return arr;
+    };
+    return f;
+  };
+
+  /** RNG global non déterministe (utilisé pour tout ce qui n'a pas besoin de replay). */
+  U.rand = U.rng((Math.random() * 0xffffffff) >>> 0);
+
+  U.pick = (arr) => arr[Math.floor(Math.random() * arr.length)];
+  U.shuffle = (arr) => {
+    for (let i = arr.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      const t = arr[i]; arr[i] = arr[j]; arr[j] = t;
+    }
+    return arr;
+  };
+  U.range = (n) => { const a = new Array(n); for (let i = 0; i < n; i++) a[i] = i; return a; };
+
+  // ---------------------------------------------------------------- couleur
+  /**
+   * Analyse une couleur et renvoie {r,g,b,a} (composantes 0..255, alpha 0..1).
+   * Accepte "#rgb", "#rrggbb", "rgb(...)", "rgba(...)" et 0xrrggbb.
+   * Les formes rgba() sont indispensables : beaucoup de panneaux d'interface
+   * sont semi-transparents, et ils passent malgré tout par shade()/mixHex().
+   */
+  U.rgb = (c) => {
+    if (typeof c === 'number') {
+      return { r: (c >> 16) & 255, g: (c >> 8) & 255, b: c & 255, a: 1 };
+    }
+    if (typeof c !== 'string') return { r: 255, g: 255, b: 255, a: 1 };
+    const s = c.trim();
+    if (s.charAt(0) === '#') {
+      const h = s.slice(1);
+      if (h.length === 3) {
+        return {
+          r: parseInt(h.charAt(0) + h.charAt(0), 16),
+          g: parseInt(h.charAt(1) + h.charAt(1), 16),
+          b: parseInt(h.charAt(2) + h.charAt(2), 16),
+          a: 1,
+        };
+      }
+      return {
+        r: parseInt(h.slice(0, 2), 16) || 0,
+        g: parseInt(h.slice(2, 4), 16) || 0,
+        b: parseInt(h.slice(4, 6), 16) || 0,
+        a: h.length >= 8 ? (parseInt(h.slice(6, 8), 16) || 0) / 255 : 1,
+      };
+    }
+    const m = /^rgba?\(([^)]+)\)$/i.exec(s);
+    if (m) {
+      const p = m[1].split(',').map((v) => parseFloat(v));
+      return {
+        r: U.clamp(p[0] || 0, 0, 255),
+        g: U.clamp(p[1] || 0, 0, 255),
+        b: U.clamp(p[2] || 0, 0, 255),
+        a: p.length > 3 && isFinite(p[3]) ? U.clamp(p[3], 0, 1) : 1,
+      };
+    }
+    // couleur nommée ou format inconnu : on ne casse rien, on renvoie du blanc
+    return { r: 255, g: 255, b: 255, a: 1 };
+  };
+
+  /** Compose une couleur CSS ; renvoie du rgba() dès que l'alpha < 1. */
+  U.hex = (r, g, b, a) => {
+    const cl = (v) => U.clamp(Math.round(v), 0, 255);
+    if (a !== undefined && a < 1) {
+      return 'rgba(' + cl(r) + ',' + cl(g) + ',' + cl(b) + ',' + (Math.round(a * 1000) / 1000) + ')';
+    }
+    return '#' + [r, g, b].map((v) => cl(v).toString(16).padStart(2, '0')).join('');
+  };
+
+  /** Éclaircit/assombrit une couleur en conservant sa transparence. amt dans [-1,1]. */
+  U.shade = (c, amt) => {
+    const o = U.rgb(c);
+    const t = amt < 0 ? 0 : 255;
+    const p = Math.abs(amt);
+    return U.hex(o.r + (t - o.r) * p, o.g + (t - o.g) * p, o.b + (t - o.b) * p, o.a);
+  };
+
+  U.mixHex = (a, b, t) => {
+    const x = U.rgb(a), y = U.rgb(b);
+    return U.hex(U.lerp(x.r, y.r, t), U.lerp(x.g, y.g, t), U.lerp(x.b, y.b, t), U.lerp(x.a, y.a, t));
+  };
+
+  /** h 0..360, s 0..1, l 0..1 */
+  U.hsl = (h, s, l) => {
+    h = ((h % 360) + 360) % 360;
+    const c = (1 - Math.abs(2 * l - 1)) * s;
+    const x = c * (1 - Math.abs(((h / 60) % 2) - 1));
+    const m = l - c / 2;
+    let r = 0, g = 0, b = 0;
+    if (h < 60) { r = c; g = x; }
+    else if (h < 120) { r = x; g = c; }
+    else if (h < 180) { g = c; b = x; }
+    else if (h < 240) { g = x; b = c; }
+    else if (h < 300) { r = x; b = c; }
+    else { r = c; b = x; }
+    return U.hex((r + m) * 255, (g + m) * 255, (b + m) * 255);
+  };
+
+  // ------------------------------------------------------------- géométrie
+  U.dist2 = (ax, az, bx, bz) => { const dx = bx - ax, dz = bz - az; return dx * dx + dz * dz; };
+  U.dist = (ax, az, bx, bz) => Math.sqrt(U.dist2(ax, az, bx, bz));
+
+  /** Collision cercle/cercle sur le plan XZ. */
+  U.circleHit = (a, b, ra, rb) => U.dist2(a.x, a.z, b.x, b.z) < (ra + rb) * (ra + rb);
+
+  /** Sépare deux corps circulaires (objets {x,z}), poids 0..1 sur `a`. */
+  U.separate = (a, b, ra, rb, bias) => {
+    bias = bias === undefined ? 0.5 : bias;
+    let dx = b.x - a.x, dz = b.z - a.z;
+    let d = Math.hypot(dx, dz);
+    const min = ra + rb;
+    if (d >= min) return false;
+    if (d < 1e-5) { dx = 1; dz = 0; d = 1; }
+    const push = (min - d);
+    dx /= d; dz /= d;
+    a.x -= dx * push * bias; a.z -= dz * push * bias;
+    b.x += dx * push * (1 - bias); b.z += dz * push * (1 - bias);
+    return true;
+  };
+
+  /** Point le plus proche sur un segment 2D (XZ). */
+  U.closestOnSeg = (px, pz, ax, az, bx, bz) => {
+    const dx = bx - ax, dz = bz - az;
+    const len = dx * dx + dz * dz;
+    let t = len === 0 ? 0 : ((px - ax) * dx + (pz - az) * dz) / len;
+    t = U.clamp(t, 0, 1);
+    return { x: ax + dx * t, z: az + dz * t, t };
+  };
+
+  // -------------------------------------------------------------- formatage
+  U.pad2 = (n) => (n < 10 ? '0' + n : '' + n);
+
+  /** Secondes -> "M:SS" */
+  U.mmss = (s) => {
+    s = Math.max(0, Math.ceil(s));
+    return Math.floor(s / 60) + ':' + U.pad2(s % 60);
+  };
+
+  U.ordinal = (n) => ['1er', '2e', '3e', '4e'][n] || (n + 1) + 'e';
+  U.ordinalEn = (n) => ['1st', '2nd', '3rd', '4th'][n] || (n + 1) + 'th';
+
+  // -------------------------------------------------------- classement util
+  /**
+   * Classe des scores (haut = meilleur par défaut) en gérant les ex aequo.
+   * Retourne [{index, score, rank}] trié, rank commençant à 0, ex aequo = même rank.
+   */
+  U.rankScores = function (scores, lowerIsBetter) {
+    const arr = scores.map((s, i) => ({ index: i, score: s }));
+    arr.sort((a, b) => (lowerIsBetter ? a.score - b.score : b.score - a.score));
+    let rank = 0;
+    for (let i = 0; i < arr.length; i++) {
+      if (i > 0 && arr[i].score !== arr[i - 1].score) rank = i;
+      arr[i].rank = rank;
+    }
+    return arr;
+  };
+
+  // ---------------------------------------------------------------- tweens
+  /**
+   * Petit gestionnaire de tweens temporels. Utilisé partout pour les
+   * animations d'UI et de plateau sans dépendance externe.
+   */
+  class TweenSet {
+    constructor() { this.list = []; }
+    add(dur, onUpdate, opts) {
+      opts = opts || {};
+      const t = {
+        t: 0, dur: Math.max(1e-6, dur), delay: opts.delay || 0,
+        ease: opts.ease || U.ease.linear, onUpdate, onDone: opts.onDone || null,
+        dead: false,
+      };
+      this.list.push(t);
+      return t;
+    }
+    /** Promesse résolue à la fin du tween. */
+    addP(dur, onUpdate, opts) {
+      return new Promise((res) => {
+        const o = Object.assign({}, opts);
+        const prev = o.onDone;
+        o.onDone = () => { if (prev) prev(); res(); };
+        this.add(dur, onUpdate, o);
+      });
+    }
+    wait(dur) { return this.addP(dur, () => {}); }
+    update(dt) {
+      for (let i = 0; i < this.list.length; i++) {
+        const t = this.list[i];
+        if (t.dead) continue;
+        if (t.delay > 0) { t.delay -= dt; if (t.delay > 0) continue; }
+        t.t += dt;
+        const k = U.clamp(t.t / t.dur, 0, 1);
+        t.onUpdate(t.ease(k), k);
+        if (k >= 1) { t.dead = true; if (t.onDone) t.onDone(); }
+      }
+      if (this.list.length) this.list = this.list.filter((t) => !t.dead);
+    }
+    clear() { this.list.length = 0; }
+    get busy() { return this.list.length > 0; }
   }
-  if(document.readyState === 'complete') hideLoading();
-  else window.addEventListener('load', hideLoading, { once: true });
-  // Fallback for environments where load may not fire or a script crashes
-  setTimeout(hideLoading, 8000);
-})();
-</script>
+  U.TweenSet = TweenSet;
 
-<!-- Non-intrusive diagnostics & visible init steps (disabled by default) -->
-<script>
-(function(){
-  // Enable diagnostics & mobile controller manually by setting these flags in the console or via a bookmarklet
-  // e.g. window.__pp_enable_diag = true; window.__pp_enable_mobile = true;
-  const diagEnabled = !!window.__pp_enable_diag;
-  const diag = document.getElementById('diag');
-  function showDiag(){ if(!diagEnabled) return; if(!diag) return; diag.style.display='block'; }
-  function logLine(k,v){ if(!diagEnabled) return; if(!diag) return; const el=document.createElement('div'); el.className='line'; el.textContent = k+': '+v; diag.appendChild(el); }
-  function clearDiag(){ if(!diagEnabled) return; if(!diag) return; diag.innerHTML=''; }
+  /** Attente simple basée sur setTimeout, utile hors boucle de rendu. */
+  U.sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
-  function statusOnce(){ try{
-    if(!diagEnabled) return;
-    clearDiag();
-    logLine('UA', navigator.userAgent.slice(0,120));
-    logLine('readyState', document.readyState);
-    logLine('THREE', typeof THREE);
-    logLine('MP', typeof MP);
-    const game=document.getElementById('game'); logLine('game elem', !!game);
-    const canvas = game ? game.querySelector('canvas') : null; logLine('canvas present', !!canvas);
-    const err=document.getElementById('err'); if(err && err.style.display!=='none'){ logLine('ERRORS', err.textContent.slice(0,300)); }
-    // show small hint to user
-    if(diag) { const s=document.createElement('small'); s.textContent='Diag active — tape ici pour fermer'; diag.appendChild(s); diag.addEventListener('click', ()=>{ diag.style.display='none'; }); }
-  }catch(e){}
+  // ------------------------------------------------------------ conteneurs
+  /** Pool d'objets simple, évite le GC dans les mini-jeux à particules. */
+  class Pool {
+    constructor(factory, reset) { this.factory = factory; this.reset = reset; this.free = []; this.used = []; }
+    get() {
+      const o = this.free.pop() || this.factory();
+      this.used.push(o);
+      return o;
+    }
+    release(o) {
+      const i = this.used.indexOf(o);
+      if (i >= 0) this.used.splice(i, 1);
+      if (this.reset) this.reset(o);
+      this.free.push(o);
+    }
+    releaseAll() {
+      while (this.used.length) this.release(this.used[this.used.length - 1]);
+    }
   }
+  U.Pool = Pool;
 
-  // do not auto-create fallback canvas (it can cover the real renderer). Only show diagnostics if explicitly enabled.
-  window.addEventListener('load', statusOnce);
-  setTimeout(statusOnce, 1200);
-  // expose helper to manually show more diagnostics
-  window.PP_showDiag = function(){ window.__pp_enable_diag = true; showDiag(); statusOnce(); };
-})();
+  // -------------------------------------------------------------- stockage
+  const SAVE_KEY = 'mp64.save.v1';
+  U.storage = {
+    load() {
+      try {
+        const raw = localStorage.getItem(SAVE_KEY);
+        return raw ? JSON.parse(raw) : null;
+      } catch (e) { return null; }
+    },
+    save(obj) {
+      try { localStorage.setItem(SAVE_KEY, JSON.stringify(obj)); return true; }
+      catch (e) { return false; }
+    },
+    clear() { try { localStorage.removeItem(SAVE_KEY); } catch (e) {} },
+  };
+})(window.MP = window.MP || {});
+
 </script>
 
-</body>
-</html>
+<script data-file="src/gfx/texture.js">
+/* =========================================================================
+   MP64 — Fabrique de textures procédurales façon N64
+   -------------------------------------------------------------------------
+   Le hardware N64 travaillait avec un TMEM de 4 Ko : en pratique, des
+   textures 32x32 à 64x64 en RGBA5551, filtrées, souvent tramées (dither).
+   On reproduit ça ici : petit canvas, quantification 16 bits, dithering
+   ordonné 4x4, puis NearestFilter + mipmaps pour retrouver le grain.
+   ========================================================================= */
+(function (MP) {
+  'use strict';
+
+  const U = MP.Util;
+  const Tex = MP.Tex = {};
+
+  const cache = new Map();
+
+  // Matrice de Bayer 4x4 normalisée (-0.5 .. 0.5)
+  const BAYER = [
+    0, 8, 2, 10,
+    12, 4, 14, 6,
+    3, 11, 1, 9,
+    15, 7, 13, 5,
+  ].map((v) => v / 16 - 0.5);
+
+  /* ---------------------------------------------------------------- canvas */
+
+  Tex.canvas = function (w, h) {
+    const c = document.createElement('canvas');
+    c.width = w; c.height = h || w;
+    const g = c.getContext('2d');
+    g.imageSmoothingEnabled = false;
+    return { c, g, w: c.width, h: c.height };
+  };
+
+  /**
+... (file continues unchanged) ...
