@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- Pepe Party v1.8.0 -- build monofichier du 2026-09-03 16:50 -- 107 scripts inlines -->
+<!-- Pepe Party v1.13.0 -- build monofichier du 2026-09-04 17:44 -- 106 scripts inlines -->
 <html lang="fr">
 <head>
 <meta charset="utf-8">
@@ -93,6 +93,7 @@
     </div>
     Les manettes branchées sont attribuées automatiquement, dans l'ordre —
     vivement conseillées aux places 5 et 6.<br>
+    Sur téléphone ou tablette, le joueur 1 joue avec une manette tactile posée sur l'écran.<br>
     En ligne, chacun joue depuis son ordinateur avec un simple code d'invitation.<br>
     <b>Le son démarre coupé — appuyez sur M pour l'activer.</b>
   </div>
@@ -479,9 +480,9 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
 
 <script data-file="src/gfx/texture.js">
 /* =========================================================================
-   Pepe Party — Fabrique de textures procédurales façon N64
+   Pepe Party — Fabrique de textures procédurales façon rétro
    -------------------------------------------------------------------------
-   Le hardware N64 travaillait avec un TMEM de 4 Ko : en pratique, des
+   Le hardware de l'époque travaillait avec un TMEM de 4 Ko : en pratique, des
    textures 32x32 à 64x64 en RGBA5551, filtrées, souvent tramées (dither).
    On reproduit ça ici : petit canvas, quantification 16 bits, dithering
    ordonné 4x4, puis NearestFilter + mipmaps pour retrouver le grain.
@@ -514,7 +515,7 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
 
   /**
    * Quantifie un canvas en RGBA5551 avec dithering ordonné.
-   * C'est ce qui donne le grain caractéristique des textures N64.
+   * C'est ce qui donne le grain caractéristique des textures de l'époque.
    */
   Tex.quantize = function (cv, opts) {
     opts = opts || {};
@@ -539,7 +540,7 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
   };
 
   /**
-   * Construit une THREE.Texture N64-like à partir d'un callback de dessin.
+   * Construit une THREE.Texture façon rétro à partir d'un callback de dessin.
    *   Tex.make('grass', 64, (g, w, h) => { ... })
    */
   Tex.make = function (key, size, draw, opts) {
@@ -865,7 +866,7 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
 /* =========================================================================
    Pepe Party — Matériaux et géométries
    -------------------------------------------------------------------------
-   La N64 faisait du Gouraud sommet + combineur de couleurs, sans specular
+   Les consoles 64 bits faisaient du Gouraud sommet + combineur de couleurs, sans specular
    ni normal map. MeshLambertMaterial est l'équivalent le plus proche dans
    Three.js et reste très bon marché : c'est notre matériau par défaut.
    ========================================================================= */
@@ -989,7 +990,7 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
   };
 
   /* ---------------------------------------------------------------- ombres
-     La N64 utilisait de simples « blob shadows » projetés : un disque
+     Ces machines utilisaient de simples « blob shadows » projetés : un disque
      texturé sous le personnage. Bien plus fidèle (et rapide) qu'une
      shadow map.                                                            */
 
@@ -1383,7 +1384,7 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
 
   /* ------------------------------------------------------------- éclairage
      Setup lumière standard : hémisphérique + directionnelle, comme le
-     rendu sommet des jeux N64 (une lumière + ambiante).                    */
+     rendu sommet des jeux de l'époque (une lumière + ambiante).                    */
 
   G.standardLights = function (scene, opts) {
     opts = opts || {};
@@ -1482,7 +1483,7 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
    Pepe Party — Personnages : modèles low-poly procéduraux + rig d'animation
    -------------------------------------------------------------------------
    Chaque personnage est assemblé à partir de primitives (< 900 triangles),
-   dans l'esprit des modèles N64. Le rig est volontairement simple :
+   dans l'esprit des modèles 3D de l'époque. Le rig est volontairement simple :
    torse / tête / 2 bras / 2 jambes. Tous les compères partagent le même
    corps (buildHumanoid) ; seules la tête et sa coiffe changent (buildHead).
    ========================================================================= */
@@ -2883,7 +2884,7 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
 
   /* ---------------------------------------------------------------------
      Humanoïde — le corps commun à tous les personnages
-     Proportions volontairement « cartoon N64 » : grosse tête (~35 % de la
+     Proportions volontairement « cartoon rétro » : grosse tête (~35 % de la
      hauteur), petit buste, membres courts. `build` élargit le buste sans
      grossir la tête, ce qui distingue le baroudeur des gabarits fins.
      --------------------------------------------------------------------- */
@@ -4663,7 +4664,7 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
 /* =========================================================================
    Pepe Party — Accessoires 3D du plateau
    -------------------------------------------------------------------------
-   Cases, étoile, bloc de dé, PNJ (champignon-guide, fantôme, roi Koopa) et
+   Cases, étoile, bloc de dé, PNJ (champignon-guide, fantôme, roi Dragon) et
    végétation. Tout est procédural et low-poly, dans le même esprit que les
    personnages.
    ========================================================================= */
@@ -4685,12 +4686,12 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
     happening: { top: '#3ac850', side: '#1f8030', icon: '!' },
     chance: { top: '#40c8b0', side: '#1f8078', icon: '?' },
     mushroom: { top: '#f0f0e0', side: '#c0b8a0', icon: 'M' },
-    koopa: { top: '#c83020', side: '#701410', icon: 'K' },
+    dragon: { top: '#c83020', side: '#701410', icon: 'D' },
     star: { top: '#f8d030', side: '#b08000', icon: '*' },
     start: { top: '#f8f0d0', side: '#c8b880', icon: 'S' },
     shop: { top: '#f0a030', side: '#a05c10', icon: null },
     bonus: { top: '#e070c8', side: '#902878', icon: null },
-    boo: { top: '#a898ec', side: '#4a3a84', icon: null },
+    fantome: { top: '#a898ec', side: '#4a3a84', icon: null },
     invisible: { top: '#808080', side: '#505050', icon: null },
   };
 
@@ -4759,7 +4760,7 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
         g.closePath();
         g.fill();
         g.lineWidth = 2; g.stroke();
-      } else if (type === 'boo') {
+      } else if (type === 'fantome') {
         // petit fantôme : tête ronde, frange ondulée, deux yeux et une bouche
         const cx = w / 2, cy = h * 0.50, rr = w * 0.27;
         g.fillStyle = '#fbfaff';
@@ -4923,47 +4924,106 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
   };
 
   /* =====================================================================
-     Bloc de dé
+     Dé à jouer
      ===================================================================== */
 
-  /** Bloc de dé flottant, avec chiffre sur les faces. */
+  // Cube aux arêtes et aux coins vraiment ronds : chaque sommet de la boîte
+  // est ramené sur la surface « boîte intérieure + rayon », avec sa vraie
+  // normale — l'arête accroche la lumière comme sur un dé en résine.
+  // 8 segments par arête : deux rangées de sommets tombent dans le congé.
+  const dieGeoCache = new Map();
+  function dieGeometry(size, radius) {
+    const key = size + ',' + radius;
+    if (dieGeoCache.has(key)) return dieGeoCache.get(key);
+    const g = new THREE.BoxGeometry(size, size, size, 8, 8, 8);
+    const pos = g.attributes.position, nor = g.attributes.normal;
+    const inner = size / 2 - radius;
+    const p = new THREE.Vector3(), q = new THREE.Vector3(), d = new THREE.Vector3();
+    for (let i = 0; i < pos.count; i++) {
+      p.fromBufferAttribute(pos, i);
+      q.set(U.clamp(p.x, -inner, inner), U.clamp(p.y, -inner, inner), U.clamp(p.z, -inner, inner));
+      d.subVectors(p, q).normalize();
+      pos.setXYZ(i, q.x + d.x * radius, q.y + d.y * radius, q.z + d.z * radius);
+      nor.setXYZ(i, d.x, d.y, d.z);
+    }
+    dieGeoCache.set(key, g);
+    return g;
+  }
+
+  // Disposition des points, sur une grille 3×3 (colonne, rangée).
+  const DIE_PIPS = {
+    1: [[1, 1]],
+    2: [[0, 0], [2, 2]],
+    3: [[0, 0], [1, 1], [2, 2]],
+    4: [[0, 0], [2, 0], [0, 2], [2, 2]],
+    5: [[0, 0], [2, 0], [1, 1], [0, 2], [2, 2]],
+    6: [[0, 0], [0, 1], [0, 2], [2, 0], [2, 1], [2, 2]],
+  };
+
+  /**
+   * Dé flottant : cube ivoire aux arêtes rondes, points noirs de 1 à 6 (le
+   * 1 en rouge, comme sur un vrai dé), gros chiffre noir de 7 à 10. Le même
+   * motif s'imprime sur les six faces : quel que soit l'angle où le bloc
+   * s'arrête, le résultat se lit. Le contraste est le premier souci — vu
+   * de la caméra du plateau, une face ne fait qu'une vingtaine de pixels.
+   *   userData.setNumber(n)  change le chiffre affiché
+   *   userData.dispose()     libère texture et matériau
+   */
   P.diceBlock = function (scale) {
     scale = scale || 1;
-    const tex = T.make('diceface', 64, (g, w, h) => {
-      T.fill(g, w, h, '#f4f6fa');
-      g.strokeStyle = '#3a4a7a'; g.lineWidth = 6;
-      g.strokeRect(3, 3, w - 6, h - 6);
-      g.fillStyle = '#e8ecf6';
-      g.fillRect(6, 6, w - 12, h - 12);
-    }, { wrap: THREE.ClampToEdgeWrapping });
-    const m = G.mesh(G.roundBox(0.9 * scale, 0.9 * scale, 0.9 * scale, 0.10 * scale),
-      G.mat({ key: 'diceblock', map: tex, emissive: 0x334466, emissiveIntensity: 0.25 }));
-
-    // chiffre affiché sur les quatre faces latérales, mis à jour dynamiquement
+    const SZ = 128;
+    const cv = T.canvas(SZ, SZ);
+    const tex = new THREE.CanvasTexture(cv.c);
+    tex.colorSpace = THREE.SRGBColorSpace;
+    tex.magFilter = THREE.LinearFilter;
+    tex.minFilter = THREE.LinearMipmapLinearFilter;
+    tex.generateMipmaps = true;
+    // La texture sert aussi d'émissif : l'ivoire garde sa clarté sur la
+    // face à l'ombre, les points restent noirs.
+    const mat = new THREE.MeshLambertMaterial({
+      map: tex, emissive: 0xffffff, emissiveMap: tex, emissiveIntensity: 0.4,
+    });
+    const m = G.mesh(dieGeometry(1.0 * scale, 0.16 * scale), mat);
     const grp = G.group();
     grp.add(m);
-    const numCv = T.canvas(96, 96);
-    const numTex = new THREE.CanvasTexture(numCv.c);
-    numTex.magFilter = THREE.LinearFilter;
-    numTex.minFilter = THREE.LinearFilter;
-    const numMat = new THREE.MeshBasicMaterial({ map: numTex, transparent: true, alphaTest: 0.4, side: THREE.DoubleSide });
-    const faces = [];
-    for (let i = 0; i < 4; i++) {
-      const a = (i / 4) * U.TAU;
-      const f = G.mesh(G.plane(0.62 * scale, 0.62 * scale), numMat,
-        Math.sin(a) * 0.462 * scale, 0, Math.cos(a) * 0.462 * scale);
-      f.rotation.y = a;
-      grp.add(f);
-      faces.push(f);
+
+    function draw(n) {
+      const g = cv.g, s = SZ;
+      g.clearRect(0, 0, s, s);
+      g.fillStyle = '#f7f2e4';
+      g.fillRect(0, 0, s, s);
+      // léger assombrissement vers le bord : le congé se devine même sans lumière
+      const grd = g.createRadialGradient(s / 2, s / 2, s * 0.30, s / 2, s / 2, s * 0.78);
+      grd.addColorStop(0, 'rgba(90,70,40,0)');
+      grd.addColorStop(1, 'rgba(90,70,40,0.32)');
+      g.fillStyle = grd;
+      g.fillRect(0, 0, s, s);
+      if (n >= 1 && n <= 6) {
+        const r = s * 0.085;
+        const at = [0.27, 0.5, 0.73];
+        DIE_PIPS[n].forEach((pp) => {
+          const x = at[pp[0]] * s, y = at[pp[1]] * s;
+          // point creusé : un liseré clair en bas à droite, l'encre par-dessus
+          g.fillStyle = 'rgba(255,255,255,0.7)';
+          g.beginPath(); g.arc(x + r * 0.18, y + r * 0.18, r, 0, U.TAU); g.fill();
+          g.fillStyle = n === 1 ? '#c8201e' : '#1c1a18';
+          g.beginPath(); g.arc(x, y, r, 0, U.TAU); g.fill();
+        });
+      } else {
+        MP.UI.text(g, String(n), s / 2, s / 2 + s * 0.03, {
+          size: n >= 10 ? s * 0.62 : s * 0.80, bold: 'black', color: '#1c1a18',
+          width: 0, shadow: false, maxWidth: s * 0.74,
+        });
+      }
     }
+
     grp.userData.setNumber = function (n) {
-      const g = numCv.g;
-      g.clearRect(0, 0, 96, 96);
-      MP.UI.text(g, String(n), 48, 50, { size: 72, color: '#2a3a6a', outline: '#ffffff', width: 8 });
-      numTex.needsUpdate = true;
+      draw(n);
+      tex.needsUpdate = true;
     };
+    grp.userData.dispose = function () { tex.dispose(); mat.dispose(); };
+    grp.userData.numTex = tex;
     grp.userData.setNumber(1);
-    grp.userData.numTex = numTex;
     return grp;
   };
 
@@ -5073,17 +5133,17 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
     return grp;
   };
 
-  /** Roi Koopa : grande silhouette menaçante (statue ou personnage). */
-  P.koopaKing = function (scale, statue) {
+  /** Roi Dragon : grande silhouette menaçante (statue ou personnage). */
+  P.dragonKing = function (scale, statue) {
     scale = scale || 1;
     const grp = G.group();
     const skinC = statue ? 0x8a8478 : 0xe8b040;
     const shellC = statue ? 0x6a6458 : 0x2a8a30;
     const spikeC = statue ? 0xa8a298 : 0xf0f0e0;
-    const skinM = G.mat({ key: 'koopa_skin' + (statue ? 's' : ''), color: skinC });
-    const shellM = G.mat({ key: 'koopa_shell' + (statue ? 's' : ''), color: shellC });
-    const spikeM = G.mat({ key: 'koopa_spike' + (statue ? 's' : ''), color: spikeC });
-    const hornM = G.mat({ key: 'koopa_horn' + (statue ? 's' : ''), color: statue ? 0xbab4aa : 0xf4ecd0 });
+    const skinM = G.mat({ key: 'dragon_skin' + (statue ? 's' : ''), color: skinC });
+    const shellM = G.mat({ key: 'dragon_shell' + (statue ? 's' : ''), color: shellC });
+    const spikeM = G.mat({ key: 'dragon_spike' + (statue ? 's' : ''), color: spikeC });
+    const hornM = G.mat({ key: 'dragon_horn' + (statue ? 's' : ''), color: statue ? 0xbab4aa : 0xf4ecd0 });
 
     // corps
     const body = new THREE.SphereGeometry(0.62 * scale, 12, 10);
@@ -5092,7 +5152,7 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
     // ventre clair
     const belly = new THREE.SphereGeometry(0.44 * scale, 10, 8);
     belly.scale(1, 1.05, 0.6);
-    grp.add(G.mesh(belly, G.mat({ key: 'koopa_belly' + (statue ? 's' : ''), color: statue ? 0xa09a90 : 0xf0d890 }),
+    grp.add(G.mesh(belly, G.mat({ key: 'dragon_belly' + (statue ? 's' : ''), color: statue ? 0xa09a90 : 0xf0d890 }),
       0, 0.70 * scale, 0.36 * scale));
 
     // carapace
@@ -5130,13 +5190,13 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
     // sourcils
     for (let i = 0; i < 2; i++) {
       const b = G.mesh(G.box(0.20 * scale, 0.07 * scale, 0.10 * scale),
-        G.mat({ key: 'koopa_brow' + (statue ? 's' : ''), color: statue ? 0x6a6458 : 0x8a3010 }),
+        G.mat({ key: 'dragon_brow' + (statue ? 's' : ''), color: statue ? 0x6a6458 : 0x8a3010 }),
         (i ? 1 : -1) * 0.16 * scale, 0.16 * scale, 0.33 * scale);
       b.rotation.z = (i ? -1 : 1) * 0.35;
       head.add(b);
     }
     // yeux
-    const eyeM = G.mat({ key: 'koopa_eye' + (statue ? 's' : ''), color: statue ? 0x4a463e : 0xd02020 });
+    const eyeM = G.mat({ key: 'dragon_eye' + (statue ? 's' : ''), color: statue ? 0x4a463e : 0xd02020 });
     for (let i = 0; i < 2; i++) {
       const e = G.mesh(G.sphere(0.062 * scale, 7, 6), eyeM, (i ? 1 : -1) * 0.155 * scale, 0.055 * scale, 0.345 * scale);
       e.scale.set(0.9, 1.25, 0.7);
@@ -5151,7 +5211,7 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
     }
     // chevelure
     head.add(G.mesh(G.sphere(0.20 * scale, 8, 7),
-      G.mat({ key: 'koopa_hair' + (statue ? 's' : ''), color: statue ? 0x5a564c : 0xc04010 }),
+      G.mat({ key: 'dragon_hair' + (statue ? 's' : ''), color: statue ? 0x5a564c : 0xc04010 }),
       0, 0.30 * scale, -0.22 * scale));
 
     // bras
@@ -5467,7 +5527,7 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
 /* =========================================================================
    Pepe Party — Entrées : 6 joueurs, clavier partagé + manettes
    -------------------------------------------------------------------------
-   On modélise une manette N64 : un stick analogique, A, B, Z, R, Start.
+   On modélise une manette de l'époque : un stick analogique, A, B, Z, R, Start.
    Les touches sont lues via `event.code` (position physique) : les
    dispositions AZERTY et QWERTY fonctionnent donc à l'identique.
    ========================================================================= */
@@ -5526,6 +5586,9 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
   const keyDown = Object.create(null);
   let anyKeyPressed = false;
   let lastActivity = 0;
+  // Instantané de la manette tactile pour l'image en cours (touchpad.js),
+  // pris une fois par I.update et partagé par pads[0] et `any`.
+  let touchFrame = null;
 
   /**
    * Le salon en ligne est le seul écran à comporter de vrais champs de
@@ -5662,6 +5725,15 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
         BUTTONS.forEach((btn) => { state[btn] = (k[btn] || []).some((c) => keyDown[c]); });
       }
 
+      // --- manette tactile (joueur 1 seulement, cf. touchpad.js) ----------
+      // `I.any` est aussi un Pad d'indice 0 : les menus la reçoivent donc.
+      let tx = 0, ty = 0;
+      const tf = this.index === 0 && this.enabled ? touchFrame : null;
+      if (tf) {
+        tx = tf.x; ty = tf.y;
+        BUTTONS.forEach((btn) => { state[btn] = state[btn] || tf[btn]; });
+      }
+
       // --- manette --------------------------------------------------------
       let gx = 0, gy = 0, sx = 0, sy = 0;
       const gp = this.gamepadIndex >= 0 ? gamepads[this.gamepadIndex] : null;
@@ -5688,11 +5760,14 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
         this.connected = false;
       }
 
-      // --- fusion clavier/manette -----------------------------------------
-      let x = kx + gx, y = ky + gy;
+      // Le stick tactile donne une position absolue, comme un vrai stick.
+      if (tf && Math.hypot(tx, ty) > Math.hypot(sx, sy)) { sx = tx; sy = ty; }
+
+      // --- fusion clavier/manette/tactile ---------------------------------
+      let x = kx + gx + tx, y = ky + gy + ty;
       const mag = Math.hypot(x, y);
       if (mag > 1) { x /= mag; y /= mag; }
-      // lissage léger : le stick N64 n'était pas instantané
+      // lissage léger : un stick analogique n'est pas instantané
       this.rawX = x; this.rawY = y;
       this.x = U.damp(this.x, x, 34, dt);
       this.y = U.damp(this.y, y, 34, dt);
@@ -5805,6 +5880,7 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
       const gp = navigator.getGamepads()[p.gamepadIndex];
       return 'Manette : ' + ((gp && gp.id) || '?').slice(0, 28);
     }
+    if (playerIndex === 0 && I.touchActive()) return 'Manette tactile à l\'écran';
     const nice = { ArrowUp: '↑', ArrowDown: '↓', ArrowLeft: '←', ArrowRight: '→',
       Space: 'ESPACE', Enter: 'ENTRÉE', ShiftRight: 'MAJ.D', Slash: ':', Period: ';',
       Comma: ',', Escape: 'ÉCHAP', Backspace: '⌫', Quote: 'ù', Semicolon: 'm',
@@ -5823,6 +5899,12 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
   /** Touches d'un joueur, sous forme de paires pour affichage. */
   I.keyList = function (playerIndex) {
     const p = I.pad(playerIndex);
+    if (playerIndex === 0 && I.touchActive()) {
+      return [
+        ['Déplacer', 'Stick tactile'], ['A', 'Bouton bleu'], ['B', 'Bouton jaune'],
+        ['Z', 'Bouton gris'], ['R', 'Gâchette en haut'], ['START', 'En haut au centre'],
+      ];
+    }
     const nice = { ArrowUp: '↑', ArrowDown: '↓', ArrowLeft: '←', ArrowRight: '→',
       Space: 'ESPACE', Enter: 'ENTRÉE', ShiftRight: 'MAJ D', Slash: '!', Period: ';',
       Comma: ',', Escape: 'ÉCHAP', ControlRight: 'CTRL D', Backspace: '⌫', Quote: 'ù',
@@ -5847,8 +5929,12 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
     return I.any.aP || I.any.bP || I.any.startP || I.any.zP || I.any.rP;
   };
 
+  /** Le joueur 1 joue-t-il avec la manette tactile ? */
+  I.touchActive = function () { return !!(I.touch && I.touch.visible); };
+
   I.update = function (dt) {
     assignGamepads();
+    if (I.touch) { I.touch.update(dt); touchFrame = I.touch.visible ? I.touch.frame() : null; }
     const gps = navigator.getGamepads ? navigator.getGamepads() : [];
     for (let i = 0; i < NUM_PLAYERS; i++) I.pads[i]._poll(dt, gps);
     // le pad « any » agrège toutes les manettes
@@ -5877,6 +5963,423 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
   /** Vibration simultanée (utilisée pour les gros impacts). */
   I.rumbleAll = function (dur, strength) {
     for (let i = 0; i < NUM_PLAYERS; i++) I.pads[i].rumble(dur, strength);
+  };
+})(window.MP = window.MP || {});
+
+</script>
+
+<script data-file="src/core/touchpad.js">
+/* =========================================================================
+   Pepe Party — Manette tactile : le joueur 1 sur téléphone ou tablette
+   -------------------------------------------------------------------------
+   Une manette semi-transparente posée par-dessus l'écran : un stick flottant
+   à gauche, A / B / Z à droite, START et R en haut. Elle n'existe que pour
+   le joueur 1 — sur un écran tactile, il n'y a de toute façon qu'un pouce
+   de chaque côté.
+
+   Son état est fusionné dans MP.Input.pad(0) (et donc dans le pad « any »
+   des menus) exactement comme un clavier ou une manette : le reste du jeu,
+   lockstep compris, n'a rien à en savoir.
+
+   Détection, réglage « auto » (S.settings.touchPad) :
+     - pointeur principal grossier (téléphone, tablette) → affichée d'emblée ;
+     - sinon, affichée dès un premier contact tactile sur la page ;
+     - une touche de clavier pressée ensuite la range, un contact la ramène ;
+     - une manette branchée au joueur 1 la range toujours ;
+     - le curseur dans un champ de texte la masque le temps de la saisie.
+
+   Changer ce réglage sur un téléphone, c'est changer le seul moyen de jouer.
+   `T.ask` pose donc la question du téléviseur qui teste une résolution —
+   « garder ce réglage ? » — et un compte à rebours ramène l'ancien si
+   personne ne répond.
+   ========================================================================= */
+(function (MP) {
+  'use strict';
+
+  const I = MP.Input;
+  const T = I.touch = {};
+
+  const BUTTONS = ['a', 'b', 'z', 'r', 'start'];
+
+  /* ------------------------------------------------------------------ état */
+
+  T.visible = false;          // la manette est à l'écran (décidé par update)
+  T.x = 0; T.y = 0;           // stick, -1..1 (y > 0 = haut)
+  T.held = { a: false, b: false, z: false, r: false, start: false };
+  // Un appui plus court qu'une image serait perdu : on le retient jusqu'à
+  // la prochaine lecture (frame()).
+  const latch = { a: false, b: false, z: false, r: false, start: false };
+
+  let lastTouch = 0, lastKey = 0;
+  const coarse = !!(window.matchMedia && window.matchMedia('(pointer: coarse)').matches)
+    || (navigator.maxTouchPoints > 1 && /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent));
+  T.coarse = coarse;
+
+  const now = () => Math.max(1, performance.now());
+  window.addEventListener('touchstart', () => { lastTouch = now(); }, { passive: true });
+  window.addEventListener('pointerdown', (e) => {
+    if (e.pointerType === 'touch') lastTouch = now();
+  }, { passive: true });
+  window.addEventListener('keydown', () => { if (!I.typing()) lastKey = now(); });
+
+  /** Faut-il la montrer ? Réglage, puis détection. */
+  T.wanted = function () {
+    const mode = (MP.State && MP.State.settings && MP.State.settings.touchPad) || 'auto';
+    if (mode === 'off') return false;
+    if (I.typing()) return false;
+    if (mode === 'on') return true;
+    if (I.pads[0].gamepadIndex >= 0) return false;
+    // Écran tactile : visible tant qu'aucune touche n'a été pressée après
+    // le dernier contact. Ailleurs : visible seulement après un contact.
+    if (coarse) return lastKey <= lastTouch;
+    return lastTouch > 0 && lastTouch > lastKey;
+  };
+
+  /**
+   * Instantané pour l'image en cours, lu UNE fois par MP.Input.update :
+   * les appuis retenus (latch) y sont consommés.
+   */
+  T.frame = function () {
+    const f = { x: T.x, y: T.y };
+    BUTTONS.forEach((b) => { f[b] = T.held[b] || latch[b]; latch[b] = false; });
+    return f;
+  };
+
+  T.releaseAll = function () {
+    BUTTONS.forEach((b) => { T.held[b] = false; });
+    T.x = T.y = 0;
+    if (dom) {
+      dom.querySelectorAll('.tp-btn.on').forEach((el) => el.classList.remove('on'));
+      stickPointer = -1;
+      setKnob(0, 0);
+      if (base) { base.classList.remove('on'); base.style.left = homeX + 'px'; base.style.top = homeY + 'px'; }
+    }
+  };
+
+  /* ------------------------------------------------------------------- DOM */
+
+  let dom = null, base = null, knob = null, zone = null;
+  let stickPointer = -1, ox = 0, oy = 0, homeX = 0, homeY = 0;
+
+  const CSS = [
+    '#touchpad { position: fixed; inset: 0; z-index: 25; pointer-events: none;',
+    '  -webkit-user-select: none; user-select: none; -webkit-touch-callout: none;',
+    '  font-family: "Arial Black", Impact, "Trebuchet MS", sans-serif; }',
+    '#touchpad.hidden { display: none; }',
+    '#touchpad > * { pointer-events: auto; touch-action: none; }',
+    '#touchpad .tp-zone { position: absolute; left: 0; bottom: 0; width: 44vw; height: 58vh; }',
+    '#touchpad .tp-base { position: absolute; width: 30vmin; height: 30vmin; margin: -15vmin 0 0 -15vmin;',
+    '  border-radius: 50%; background: rgba(20,30,70,0.32); border: 0.6vmin solid rgba(255,255,255,0.45);',
+    '  box-shadow: 0 0 0 0.3vmin rgba(0,0,0,0.25); transition: opacity 0.15s; opacity: 0.55; }',
+    '#touchpad .tp-base.on { opacity: 0.9; }',
+    '#touchpad .tp-base::before { content: ""; position: absolute; inset: 22%; border-radius: 50%;',
+    '  border: 0.4vmin dashed rgba(255,255,255,0.28); }',
+    '#touchpad .tp-knob { position: absolute; left: 50%; top: 50%; width: 13vmin; height: 13vmin;',
+    '  margin: -6.5vmin 0 0 -6.5vmin; border-radius: 50%;',
+    '  background: radial-gradient(circle at 35% 30%, #a8b8e8, #46589c 60%, #22305e);',
+    '  border: 0.5vmin solid rgba(255,255,255,0.7); box-shadow: 0 0.6vmin 1.2vmin rgba(0,0,0,0.45); }',
+    '#touchpad .tp-btn { position: absolute; display: flex; align-items: center; justify-content: center;',
+    '  border-radius: 50%; color: #fff; text-shadow: 0 0.3vmin 0 rgba(0,0,0,0.5);',
+    '  border: 0.5vmin solid rgba(255,255,255,0.55); opacity: 0.55; transition: opacity 0.1s, transform 0.05s;',
+    '  box-shadow: inset 0 -0.8vmin 0 rgba(0,0,0,0.22), 0 0.4vmin 0.8vmin rgba(0,0,0,0.35); }',
+    '#touchpad .tp-btn.on { opacity: 0.95; transform: scale(0.93); }',
+    '#touchpad .tp-a { right: 8vmin; bottom: 20vmin; width: 19vmin; height: 19vmin; font-size: 8.5vmin;',
+    '  background: radial-gradient(circle at 35% 30%, #8ed0ff, #3aa0f0 55%, #1c60a8); }',
+    '#touchpad .tp-b { right: 26vmin; bottom: 8vmin; width: 15vmin; height: 15vmin; font-size: 6.5vmin;',
+    '  background: radial-gradient(circle at 35% 30%, #fff0a0, #f0d040 55%, #a88010); }',
+    '#touchpad .tp-z { right: 8vmin; bottom: 44vmin; width: 15vmin; height: 15vmin; font-size: 6vmin;',
+    '  background: radial-gradient(circle at 35% 30%, #d0d0d0, #909090 55%, #505050); }',
+    '#touchpad .tp-r { right: 6vmin; top: 5vmin; width: 22vmin; height: 8.5vmin; border-radius: 4.5vmin;',
+    '  font-size: 4.5vmin; background: linear-gradient(#e8e8e8, #c8c8c8 55%, #888); }',
+    '#touchpad .tp-start { left: 50%; top: 5vmin; margin-left: -11vmin; width: 22vmin; height: 7vmin;',
+    '  border-radius: 3.5vmin; font-size: 3.4vmin; letter-spacing: 0.2vmin;',
+    '  background: linear-gradient(#ff8080, #e04040 55%, #902020); }',
+    '#touchpad .tp-full { left: 4vmin; top: 4vmin; width: 9vmin; height: 9vmin; border-radius: 2vmin;',
+    '  font-size: 5vmin; font-family: sans-serif; background: rgba(20,30,70,0.45); opacity: 0.5; }',
+    // --- boîte « garder ce réglage ? » -----------------------------------
+    // Le voile laisse passer les doigts : la manette qu'il recouvre reste
+    // utilisable, et son bouton A vaut confirmation. Seule la boîte prend.
+    '#tp-ask { position: fixed; inset: 0; z-index: 26; pointer-events: none;',
+    '  display: flex; align-items: center; justify-content: center; padding: 4vmin;',
+    '  background: rgba(4,8,24,0.42); -webkit-user-select: none; user-select: none;',
+    '  font-family: "Trebuchet MS", "Segoe UI", Verdana, sans-serif; }',
+    '#tp-ask .tp-box { pointer-events: auto; touch-action: manipulation; text-align: center;',
+    '  width: min(78vw, 92vmin); max-width: 520px; padding: 3.4vmin 3.4vmin 3vmin;',
+    '  border-radius: 2.4vmin; color: #ffffff;',
+    '  background: linear-gradient(#243a72, #101c44 60%, #0a1230);',
+    '  border: 0.6vmin solid #ffffff; box-shadow: 0 1.4vmin 3vmin rgba(0,0,0,0.55); }',
+    '#tp-ask h3 { font-family: "Arial Black", Impact, sans-serif; color: #ffd11a;',
+    '  font-size: clamp(15px, 4vmin, 26px); letter-spacing: 0.1vmin;',
+    '  text-shadow: 0 0.3vmin 0 rgba(0,0,0,0.55); margin-bottom: 1.8vmin; }',
+    '#tp-ask .tp-val { font-size: clamp(13px, 3.4vmin, 21px); font-weight: bold; margin-bottom: 1.6vmin; }',
+    '#tp-ask .tp-note { font-size: clamp(11px, 2.6vmin, 15px); color: #ffd0a0;',
+    '  line-height: 1.45; margin-bottom: 1.8vmin; }',
+    '#tp-ask .tp-count { font-size: clamp(11px, 2.6vmin, 15px); color: #a8c0f0; margin-bottom: 1.2vmin; }',
+    '#tp-ask .tp-gauge { height: 1.2vmin; min-height: 6px; border-radius: 1vmin; overflow: hidden;',
+    '  background: rgba(0,0,0,0.45); border: 0.25vmin solid rgba(255,255,255,0.5); margin-bottom: 2.6vmin; }',
+    '#tp-ask .tp-gauge i { display: block; height: 100%; background: linear-gradient(#ffe680, #f0a020); }',
+    '#tp-ask .tp-row { display: flex; gap: 2.4vmin; justify-content: center; }',
+    '#tp-ask button { flex: 1 1 0; max-width: 46%; padding: 1.8vmin 1vmin; border-radius: 1.6vmin;',
+    '  font-family: inherit; font-weight: bold; font-size: clamp(13px, 3.2vmin, 19px); color: #ffffff;',
+    '  border: 0.5vmin solid #ffffff; cursor: pointer; touch-action: manipulation; }',
+    '#tp-ask button:active { transform: scale(0.96); }',
+    '#tp-ask .tp-keep { color: #3a2000; background: linear-gradient(#ffe680, #f0a020 60%, #b06800); }',
+    '#tp-ask .tp-cancel { background: linear-gradient(#5a72c0, #2a3a78 60%, #14204c); }',
+  ].join('\n');
+
+  function vmin() { return Math.min(window.innerWidth, window.innerHeight) / 100; }
+
+  function setKnob(x, y) {
+    if (!knob) return;
+    const r = 8.5 * vmin();   // course visible du bouton, en px
+    knob.style.transform = 'translate(' + (x * r) + 'px,' + (-y * r) + 'px)';
+  }
+
+  function stickFrom(e) {
+    const R = 11 * vmin();    // rayon de pleine amplitude, en px
+    let dx = e.clientX - ox, dy = e.clientY - oy;
+    let m = Math.hypot(dx, dy);
+    if (m > R) { dx *= R / m; dy *= R / m; m = R; }
+    let x = dx / R, y = -dy / R;
+    // petite zone morte au centre, puis pleine course
+    const dz = 0.12, n = m / R;
+    if (n < dz) { x = 0; y = 0; }
+    else { const s = (n - dz) / (1 - dz) / n; x *= s; y *= s; }
+    T.x = x; T.y = y;
+    setKnob(x, y);
+  }
+
+  // La base est positionnée DANS la zone : ses coordonnées sont relatives
+  // au coin haut-gauche de celle-ci, pas à la fenêtre.
+  let zoneL = 0, zoneT = 0;
+  function homeBase() {
+    if (!zone || !base) return;
+    const zr = zone.getBoundingClientRect();
+    zoneL = zr.left; zoneT = zr.top;
+    homeX = 22 * vmin();
+    homeY = zr.height - 24 * vmin();
+    if (stickPointer < 0) { base.style.left = homeX + 'px'; base.style.top = homeY + 'px'; }
+  }
+
+  // La feuille de style sert aussi à la boîte de confirmation, qui peut
+  // s'ouvrir alors que la manette, elle, n'a jamais été construite.
+  let styleEl = null;
+  function ensureStyle() {
+    if (styleEl) return;
+    styleEl = document.createElement('style');
+    styleEl.textContent = CSS;
+    document.head.appendChild(styleEl);
+  }
+
+  function build() {
+    ensureStyle();
+
+    dom = document.createElement('div');
+    dom.id = 'touchpad';
+    dom.className = 'hidden';
+    dom.addEventListener('contextmenu', (e) => e.preventDefault());
+
+    // --- stick flottant -------------------------------------------------
+    zone = document.createElement('div');
+    zone.className = 'tp-zone';
+    base = document.createElement('div');
+    base.className = 'tp-base';
+    knob = document.createElement('div');
+    knob.className = 'tp-knob';
+    base.appendChild(knob);
+    zone.appendChild(base);
+    dom.appendChild(zone);
+
+    zone.addEventListener('pointerdown', (e) => {
+      if (stickPointer >= 0) return;
+      e.preventDefault();
+      stickPointer = e.pointerId;
+      // Le stick se recentre sous le doigt : plus besoin de viser la base.
+      ox = e.clientX; oy = e.clientY;
+      base.style.left = (ox - zoneL) + 'px'; base.style.top = (oy - zoneT) + 'px';
+      base.classList.add('on');
+      try { zone.setPointerCapture(e.pointerId); } catch (err) { /* ignoré */ }
+      stickFrom(e);
+    });
+    zone.addEventListener('pointermove', (e) => {
+      if (e.pointerId !== stickPointer) return;
+      e.preventDefault();
+      stickFrom(e);
+    });
+    const endStick = (e) => {
+      if (e.pointerId !== stickPointer) return;
+      stickPointer = -1;
+      T.x = 0; T.y = 0;
+      setKnob(0, 0);
+      base.classList.remove('on');
+      base.style.left = homeX + 'px'; base.style.top = homeY + 'px';
+    };
+    zone.addEventListener('pointerup', endStick);
+    zone.addEventListener('pointercancel', endStick);
+    zone.addEventListener('lostpointercapture', endStick);
+
+    // --- boutons ----------------------------------------------------------
+    const mk = (name, cls, label) => {
+      const el = document.createElement('div');
+      el.className = 'tp-btn ' + cls;
+      el.textContent = label;
+      el.addEventListener('pointerdown', (e) => {
+        e.preventDefault();
+        T.held[name] = true; latch[name] = true;
+        el.classList.add('on');
+        try { el.setPointerCapture(e.pointerId); } catch (err) { /* ignoré */ }
+      });
+      const off = () => { T.held[name] = false; el.classList.remove('on'); };
+      el.addEventListener('pointerup', off);
+      el.addEventListener('pointercancel', off);
+      el.addEventListener('lostpointercapture', off);
+      dom.appendChild(el);
+      return el;
+    };
+    mk('a', 'tp-a', 'A');
+    mk('b', 'tp-b', 'B');
+    mk('z', 'tp-z', 'Z');
+    mk('r', 'tp-r', 'R');
+    mk('start', 'tp-start', 'START');
+
+    // --- plein écran (quand le navigateur le permet — pas sur iPhone) ---
+    const root = document.documentElement;
+    if (root.requestFullscreen && document.fullscreenEnabled !== false) {
+      const fs = document.createElement('div');
+      fs.className = 'tp-btn tp-full';
+      fs.textContent = '⛶';
+      fs.title = 'Plein écran';
+      fs.addEventListener('pointerdown', (e) => { e.preventDefault(); fs.classList.add('on'); });
+      fs.addEventListener('pointerup', () => {
+        fs.classList.remove('on');
+        if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
+        else root.requestFullscreen().catch(() => {});
+      });
+      dom.appendChild(fs);
+    }
+
+    document.body.appendChild(dom);
+    window.addEventListener('resize', homeBase);
+    window.addEventListener('blur', T.releaseAll);
+    document.addEventListener('visibilitychange', () => { if (document.hidden) T.releaseAll(); });
+    homeBase();
+  }
+
+  /* ------------------------------------------- boîte « garder ce réglage ? »
+
+     Le nouveau réglage s'applique AVANT la question — il faut le voir pour
+     en juger — et le compte à rebours ramène l'ancien sans réponse. Elle est
+     en DOM et non dessinée dans la toile : elle doit rester tapable alors
+     même que la manette tactile vient de disparaître sous elle.
+
+     `tapKeep: false` retire le bouton « Garder » : l'appelant s'en sert quand
+     le nouveau réglage laisserait le joueur sans aucune commande. On ne
+     confirme pas du doigt un réglage qui supprime le doigt — seul un vrai
+     appui sur A, relayé par l'écran des options, le garde alors.
+     --------------------------------------------------------------------- */
+
+  let ask = null;
+
+  /** Vrai sur un appareil où la manette tactile a un sens (donc où ce
+      réglage se voit) : pointeur grossier, ou écran déjà touché. */
+  T.touchDevice = function () { return coarse || lastTouch > 0; };
+
+  T.asking = function () { return !!ask; };
+
+  function node(tag, cls, text) {
+    const e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (text !== undefined) e.textContent = text;
+    return e;
+  }
+
+  function paintAsk() {
+    if (!ask) return;
+    const s = Math.max(0, Math.ceil(ask.left));
+    ask.count.textContent = (ask.back ? 'Retour à « ' + ask.back + ' »' : 'Retour au réglage précédent')
+      + ' dans ' + s + ' s';
+    ask.fill.style.width = (Math.max(0, Math.min(1, ask.left / ask.secs)) * 100) + '%';
+  }
+
+  function closeAsk() {
+    if (!ask) return;
+    if (ask.dom.parentNode) ask.dom.parentNode.removeChild(ask.dom);
+    ask = null;
+  }
+
+  /**
+   * Pose la question. opts : { title, value, note, back, seconds, tapKeep,
+   * onKeep, onRevert }. Renvoie vrai — l'appelant sait ainsi que le réglage
+   * n'est pas encore acquis.
+   */
+  T.ask = function (opts) {
+    opts = opts || {};
+    closeAsk();
+    ensureStyle();
+
+    const root = node('div');
+    root.id = 'tp-ask';
+    const box = node('div', 'tp-box');
+    box.appendChild(node('h3', null, opts.title || 'Garder ce réglage ?'));
+    if (opts.value) box.appendChild(node('div', 'tp-val', opts.value));
+    if (opts.note) box.appendChild(node('div', 'tp-note', opts.note));
+    const count = node('div', 'tp-count');
+    const gauge = node('div', 'tp-gauge');
+    const fill = node('i');
+    gauge.appendChild(fill);
+    box.appendChild(count);
+    box.appendChild(gauge);
+
+    const row = node('div', 'tp-row');
+    if (opts.tapKeep !== false) {
+      const keep = node('button', 'tp-keep', 'Garder');
+      keep.addEventListener('click', () => T.answer(true));
+      row.appendChild(keep);
+    }
+    const cancel = node('button', 'tp-cancel', 'Annuler');
+    cancel.addEventListener('click', () => T.answer(false));
+    row.appendChild(cancel);
+    box.appendChild(row);
+    root.appendChild(box);
+    document.body.appendChild(root);
+
+    ask = {
+      dom: root, count, fill,
+      secs: opts.seconds > 0 ? opts.seconds : 10,
+      left: opts.seconds > 0 ? opts.seconds : 10,
+      back: opts.back || '',
+      onKeep: opts.onKeep, onRevert: opts.onRevert,
+    };
+    paintAsk();
+    return true;
+  };
+
+  /** Réponse : garder (A, bouton « Garder ») ou revenir en arrière (B). */
+  T.answer = function (keep) {
+    if (!ask) return false;
+    const cb = keep ? ask.onKeep : ask.onRevert;
+    closeAsk();
+    if (cb) cb();
+    return true;
+  };
+
+  /** Appelé chaque image par MP.Input.update : fait suivre la visibilité. */
+  T.update = function (dt) {
+    // Le compte à rebours passe d'abord : le retour en arrière qu'il déclenche
+    // se voit alors dès cette image.
+    if (ask) {
+      ask.left -= (dt > 0 ? Math.min(dt, 0.1) : 0);
+      if (ask.left <= 0) T.answer(false);
+      else paintAsk();
+    }
+
+    const want = T.wanted();
+    if (want === T.visible) return;
+    T.visible = want;
+    if (want && !dom) build();
+    if (dom) dom.classList.toggle('hidden', !want);
+    if (want) homeBase();
+    else T.releaseAll();
   };
 })(window.MP = window.MP || {});
 
@@ -6678,11 +7181,11 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
   SFX.warp = () => beep(200, 0.5, { vol: 0.22, duty: 0.25, to: 2400, glide: 0.9 });
   SFX.appear = () => beep(300, 0.28, { vol: 0.2, duty: 0.125, to: 1600, glide: 0.8 });
   SFX.vanish = () => beep(1600, 0.28, { vol: 0.2, duty: 0.125, to: 240, glide: 0.9 });
-  SFX.boo = () => {
+  SFX.fantome = () => {
     beep(180, 0.7, { vol: 0.2, type: 'sine', to: 120, glide: 0.9 });
     noise(0.7, { vol: 0.08, freq: 500, freqTo: 200, q: 2 });
   };
-  SFX.koopa = () => {
+  SFX.dragon = () => {
     beep(90, 0.7, { vol: 0.3, type: 'sawtooth', to: 55, filter: 700 });
     noise(0.7, { vol: 0.2, freq: 380, freqTo: 90, q: 0.6, filterType: 'lowpass' });
   };
@@ -7253,8 +7756,8 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
     ],
   };
 
-  /** Événement du roi Koopa — court et brutal */
-  S.koopa_event = {
+  /** Événement du roi Dragon — court et brutal */
+  S.dragon_event = {
     bpm: 150,
     tracks: [
       { inst: 'brass', vol: 0.24, seq:
@@ -7377,7 +7880,7 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
 /* =========================================================================
    Pepe Party — Moteur : rendu, boucle principale, écran
    -------------------------------------------------------------------------
-   La N64 sortait du 320x240 (parfois 640x480) en 4:3. On rend donc dans un
+   Les consoles 64 bits sortaient du 320x240 (parfois 640x480) en 4:3. On rend donc dans un
    framebuffer basse résolution qu'on étire ensuite en « nearest » : c'est
    ce qui donne immédiatement l'aspect d'époque, et c'est gratuit en perf.
    Le HUD est dessiné dans un canvas 2D séparé, en résolution supérieure,
@@ -8247,7 +8750,7 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
    *
    * `slot` est son rang dans la table, `opts.count` l'effectif total (2 à 6).
    * Jusqu'à quatre joueurs, les panneaux occupent les quatre coins comme sur
-   * la N64. Au-delà, ils s'empilent en deux colonnes — première moitié à
+   * l'époque. Au-delà, ils s'empilent en deux colonnes — première moitié à
    * gauche, seconde à droite — en partant du haut, ce qui laisse le bas de
    * l'écran aux invites et au dé.
    */
@@ -8685,8 +9188,8 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
       },
     },
     bell: {
-      id: 'bell', name: 'Cloche de Boo', short: 'Boo',
-      desc: 'Boo dérobe 10 pièces au joueur le plus riche.',
+      id: 'bell', name: 'Cloche du Fantôme', short: 'Fantôme',
+      desc: 'Le Fantôme dérobe 10 pièces au joueur le plus riche.',
       shape: 'bell', color: '#d8d0f0', spots: '#ffffff',
       price: 12,
       async act(bs, p) {
@@ -8696,11 +9199,11 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
           .sort((a, b) => (b.coins - a.coins) || (a.index - b.index));
         const victim = others[0];
         if (!victim || victim.coins <= 0) {
-          await bs.say('Personne n\'a la moindre pièce à voler... Boo repart bredouille.',
-            { speaker: 'Boo', color: '#7050a0', auto: 1.4 });
+          await bs.say('Personne n\'a la moindre pièce à voler... le Fantôme repart bredouille.',
+            { speaker: 'Fantôme', color: '#7050a0', auto: 1.4 });
           return;
         }
-        await bs.booSteal(p, victim, 10);
+        await bs.fantomeSteal(p, victim, 10);
       },
     },
     lamp: {
@@ -8732,7 +9235,7 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
       shape: 'mushroom', color: '#7ac850', spots: '#2c4a20',
       price: 14,
       async act(bs, p) {
-        // Cible désignée sans tirage, comme la Cloche de Boo : celui qui
+        // Cible désignée sans tirage, comme la Cloche du Fantôme : celui qui
         // mène au classement, et qui n'a pas déjà un tour à sauter.
         const victim = MP.State.standings()
           .filter((q) => q !== p && !q.skipTurn)[0];
@@ -8889,7 +9392,7 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
     g.lineCap = 'butt';
   };
 
-  /** Cloche de Boo : une clochette au battant fantôme. */
+  /** Cloche du Fantôme : une clochette au battant fantôme. */
   shapes.bell = function (g, d, r) {
     g.fillStyle = d.color;
     g.strokeStyle = '#2a2040';
@@ -8906,7 +9409,7 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
     g.fill(); g.stroke();
     // anse
     g.beginPath(); g.arc(0, -r * 0.74, r * 0.16, Math.PI, U.TAU); g.stroke();
-    // yeux de Boo
+    // yeux du Fantôme
     g.fillStyle = '#2a2040';
     g.beginPath(); g.ellipse(-r * 0.20, -r * 0.10, r * 0.09, r * 0.13, 0, 0, U.TAU); g.fill();
     g.beginPath(); g.ellipse(r * 0.20, -r * 0.10, r * 0.09, r * 0.13, 0, 0, U.TAU); g.fill();
@@ -9117,8 +9620,8 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
       this.minigameWins = 0;
       this.maxCoins = 10;
       this.spacesLanded = {
-        blue: 0, red: 0, happening: 0, question: 0, minigame: 0, boo: 0,
-        koopa: 0, mushroom: 0, star: 0, shop: 0, bonus: 0,
+        blue: 0, red: 0, happening: 0, question: 0, minigame: 0, fantome: 0,
+        dragon: 0, mushroom: 0, star: 0, shop: 0, bonus: 0,
       };
       this.finished = false;
       this.rank = 0;
@@ -9272,6 +9775,9 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
     cameraShake: true,
     cpuSpeed: 1,       // multiplicateur de vitesse des tours CPU
     hints: true,
+    // 'auto' | 'on' | 'off' — manette tactile du joueur 1. Le seul réglage
+    // qui ne se garde pas d'une séance à l'autre : cf. S.loadSave.
+    touchPad: 'auto',
   };
 
   /* ------------------------------------------------------- sauvegarde disque */
@@ -9294,6 +9800,12 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
       Object.assign(S.save, d);
       if (d.settings) Object.assign(S.settings, d.settings);
     }
+    // La manette tactile repart toujours sur « Auto » : c'est le seul mode
+    // qui s'accorde à l'appareil du moment, et le seul dont on soit sûr qu'il
+    // laisse de quoi jouer. Un « Masquée » gardé d'une fois sur l'autre
+    // ouvrirait le jeu sans commandes sur un téléphone. Le réglage vaut donc
+    // pour la séance en cours, pas au-delà.
+    S.settings.touchPad = 'auto';
     if (!Array.isArray(S.save.customChars)) S.save.customChars = [];
     // Le vestiaire se reconstruit à chaque chargement : les créations sont
     // rangées sous forme de recettes, pas de définitions (cf. MP.Chars).
@@ -9601,6 +10113,9 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
         });
         if (MP.Input.pad(i).gamepadIndex >= 0) {
           MP.UI.text(g, '🎮 Manette connectée', x + colW / 2 - 10, y + 30 + list.length * lineH,
+            { size: 14, color: '#8affa0', width: 0, shadow: false });
+        } else if (i === 0 && MP.Input.touchActive()) {
+          MP.UI.text(g, '📱 Manette tactile', x + colW / 2 - 10, y + 30 + list.length * lineH,
             { size: 14, color: '#8affa0', width: 0, shadow: false });
         }
       }
@@ -17075,7 +17590,7 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
     P + '4p/buried_treasure.js',
     P + '4p/crazy_cutter.js',
     P + '4p/face_lift.js',
-    P + '4p/hot_bob_omb.js',
+    P + '4p/bombe_brulante.js',
     P + '4p/balloon_burst.js',
     P + '4p/coin_block_blitz.js',
     P + '4p/skateboard_scamper.js',
@@ -17085,12 +17600,12 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
     P + '4p/grab_bag.js',
     P + '4p/bumper_balls.js',
     P + '4p/tipsy_tourney.js',
-    P + '4p/shy_guy_says.js',
+    P + '4p/jacques_a_dit.js',
     P + '4p/hammer_drop.js',
     P + '4p/slot_car_derby.js',
     P + '4p/orchestre.js',
     P + '4p/bombs_away.js',
-    P + '4p/piranha_pursuit.js',
+    P + '4p/course_poursuite.js',
     P + '4p/whack_a_plant.js',
     P + '4p/running_of_the_bulb.js',
     P + '4p/bumper_bees.js',
@@ -17122,22 +17637,20 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
     P + '2v2/deep_sea_divers.js',
     P + '2v2/handcar_havoc.js',
 
-    /* ---------------- 1 joueur (10) ---------------- */
+    /* ---------------- 1 joueur (8) ---------------- */
     P + 'solo/memory_match.js',
     P + 'solo/limbo_dance.js',
     P + 'solo/shell_game.js',
     P + 'solo/knock_block_tower.js',
     P + 'solo/ghost_guess.js',
     P + 'solo/slot_machine.js',
-    P + 'solo/coin_shower.js',
     P + 'solo/hand_hand.js',
-    P + 'solo/pedal_power.js',
     P + 'solo/teetering_towers.js',
 
     /* ---------------- Bonus (3) ---------------- */
     P + 'bonus/door_prize.js',
-    P + 'bonus/boo_away.js',
-    P + 'bonus/koopa_time.js',
+    P + 'bonus/fantome_piece.js',
+    P + 'bonus/dragon_time.js',
   ];
 })(window.MP = window.MP || {});
 
@@ -19570,13 +20083,13 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
 })(window.MP = window.MP || {});
 
 </script>
-<script data-file="src/minigames/4p/hot_bob_omb.js">
+<script data-file="src/minigames/4p/bombe_brulante.js">
 /* =========================================================================
-   « Bombe Brûlante » (Hot Bob-omb)
+   « Bombe Brûlante »
    -------------------------------------------------------------------------
    2 à 6 joueurs · pas de chrono
    Une arène circulaire entourée de vide. Un joueur commence avec une
-   Bob-omb à la mèche allumée sur la tête : en touchant un adversaire, la
+   Bombe à la mèche allumée sur la tête : en touchant un adversaire, la
    bombe lui est transmise (avec un court délai anti-renvoi). La mèche
    brûle entre 8 et 14 secondes (tirage caché) ; à l'explosion, le porteur
    est éliminé et une nouvelle bombe part chez un survivant au hasard.
@@ -19596,7 +20109,7 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
   const ICE_R = 1.9;          // rayon de la flaque de glace
   const ICE_DUR = 2;          // glissade sans contrôle (et sursis d'après) en s
 
-  class HotBobOmb {
+  class BombeBrulante {
     constructor(ctx) {
       this.ctx = ctx;
       this.walkers = [];
@@ -19615,10 +20128,10 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
       ctx.sky({ stops: [[0, '#150e1c'], [0.55, '#3a2438'], [1, '#7a4a58']], radius: 180 });
       ctx.lightScene({ sunDir: [0.4, 1, 0.3], hemiIntensity: 0.75, ambientIntensity: 0.5 });
 
-      const floorTex = T.stone('#5a4858', 'hbo_floor');
+      const floorTex = T.stone('#5a4858', 'bbr_floor');
       ctx.floorCircle(ARENA, floorTex);
       // bord lumineux marquant le vide
-      const rimMat = G.mat({ color: 0xff6030, emissive: 0xff3000, emissiveIntensity: 0.6, key: 'hbo_rim' });
+      const rimMat = G.mat({ color: 0xff6030, emissive: 0xff3000, emissiveIntensity: 0.6, key: 'bbr_rim' });
       const rim = G.mesh(G.torus(ARENA, 0.12, 6, 32), rimMat, 0, 0.02, 0);
       rim.rotation.x = Math.PI / 2;
       ctx.add(rim);
@@ -19638,10 +20151,10 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
       });
 
       // bombe (invisible tant que personne ne la porte)
-      const bombMat = G.mat({ color: 0x161616, key: 'hbo_bomb' });
+      const bombMat = G.mat({ color: 0x161616, key: 'bbr_bomb' });
       const grp = G.group(0, 0, 0);
       grp.add(G.mesh(G.sphere(0.32, 10, 8), bombMat, 0, 0, 0));
-      const fuseMat = G.mat({ color: 0x8a5a30, key: 'hbo_fuse' });
+      const fuseMat = G.mat({ color: 0x8a5a30, key: 'bbr_fuse' });
       const fuse = G.mesh(G.cyl(0.03, 0.03, 0.24, 5), fuseMat, 0, 0.34, 0);
       grp.add(fuse);
       grp.visible = false;
@@ -19861,13 +20374,13 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
   }
 
   MP.Minigames.register({
-    id: 'hot_bob_omb',
+    id: 'bombe_brulante',
     name: 'Bombe Brûlante',
-    nameEn: 'Hot Bob-omb',
+    nameEn: 'Hot Bomb',
     type: '4p',
     counts: [2, 3, 4, 5, 6],
     duration: 0,
-    desc: 'Ne restez pas avec la Bob-omb entre les mains ! Touchez un adversaire ' +
+    desc: 'Ne restez pas avec la Bombe entre les mains ! Touchez un adversaire ' +
       'pour la lui refiler avant que la mèche n\'arrive à son terme. Lui sauter ' +
       'sur la tête l\'écrase et l\'empêche de fuir pendant une seconde. ' +
       'Attention à la flaque de glace près du bord : on la traverse, on part ' +
@@ -19879,7 +20392,7 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
     scoreLabel: 'survie',
     record: null,
     music: 'mg_tense',
-    create: (ctx) => new HotBobOmb(ctx),
+    create: (ctx) => new BombeBrulante(ctx),
   });
 })(window.MP = window.MP || {});
 
@@ -21113,7 +21626,7 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
         if (!p.data.falling && w.p.y < -0.8) {
           p.data.falling = true;
           w.actor.play('hurt', { once: true, dur: 0.4, then: 'idle' });
-          MP.Audio.play('boo');
+          MP.Audio.play('fantome');
         }
         if (p.data.falling && w.p.y < -10) {
           p.alive = false;
@@ -22843,12 +23356,12 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
 })(window.MP = window.MP || {});
 
 </script>
-<script data-file="src/minigames/4p/shy_guy_says.js">
+<script data-file="src/minigames/4p/jacques_a_dit.js">
 /* =========================================================================
-   « Jacques a Dit » (Shy Guy Says)
+   « Jacques a Dit »
    -------------------------------------------------------------------------
    2 à 6 joueurs · pas de chrono
-   Un grand Shy Guy masqué annonce un bouton (A, B ou Z). S'il précède
+   Un grand personnage masqué annonce un bouton (A, B ou Z). S'il précède
    l'ordre de « Jacques a dit », il FAUT appuyer dans le temps imparti ;
    sinon il ne faut PAS appuyer. Une erreur élimine. Le rythme s'accélère
    à chaque manche. Dernier debout ou 12 manches → fin.
@@ -22863,7 +23376,7 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
   const MAX_ROUNDS = 12;
   const BTN_LABEL = { a: 'A', b: 'B', z: 'Z' };
 
-  class ShyGuySays {
+  class JacquesADit {
     constructor(ctx) {
       this.ctx = ctx;
       this.round = 0;
@@ -22886,16 +23399,16 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
       ctx.sky({ stops: [[0, '#150c1e'], [0.55, '#3a2440'], [1, '#684868']], radius: 190 });
       ctx.lightScene({ sunDir: [0.35, 1, 0.4], hemiIntensity: 0.7, ambientIntensity: 0.55 });
 
-      const floorTex = T.make('sgs_stage', 64, (g, w, h) => {
+      const floorTex = T.make('jad_stage', 64, (g, w, h) => {
         T.fill(g, w, h, '#5a3a68');
         T.checker(g, w, h, '#5a3a68', '#4c3058', 6);
         T.noise(g, w, h, 0.06, 3, true);
       });
       ctx.floor(16, 12, floorTex, { tile: 8 });
 
-      this._buildShyGuy();
+      this._buildMeneur();
 
-      // rangée de joueurs, face au Shy Guy (+Z -> -Z). La rangée occupe
+      // rangée de joueurs, face au meneur masqué (+Z -> -Z). La rangée occupe
       // toujours la même largeur de scène : l'écart se resserre à six.
       const positions = ctx.rowPositions(6.3, 0, 3.6, { facing: Math.PI, maxGap: 2.1 });
       ctx.spawnActors(positions, { scale: 1.15 });
@@ -22903,29 +23416,29 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
       ctx.setCamera(0, 6.6, 10.6, 0, 2, -1);
     }
 
-    _buildShyGuy() {
+    _buildMeneur() {
       const ctx = this.ctx;
       const grp = G.group(0, 0, -4.6);
 
-      const robeTex = T.make('sgs_robe', 32, (g, w, h) => {
+      const robeTex = T.make('jad_robe', 32, (g, w, h) => {
         T.fill(g, w, h, '#3060d8');
         T.noise(g, w, h, 0.08, 8, true);
       });
-      grp.add(G.mesh(G.cone(1.7, 3.3, 14), G.mat({ map: robeTex, key: 'sgs_robem' }), 0, 1.65, 0));
+      grp.add(G.mesh(G.cone(1.7, 3.3, 14), G.mat({ map: robeTex, key: 'jad_robem' }), 0, 1.65, 0));
 
-      const maskMat = G.mat({ color: 0xffffff, key: 'sgs_mask' });
+      const maskMat = G.mat({ color: 0xffffff, key: 'jad_mask' });
       const mask = G.mesh(G.sphere(0.9, 16, 12), maskMat, 0, 3.75, 0.1);
       grp.add(mask);
 
-      const eyeMat = G.mat({ color: 0x201018, key: 'sgs_eye' });
+      const eyeMat = G.mat({ color: 0x201018, key: 'jad_eye' });
       grp.add(G.mesh(G.sphere(0.11, 8, 6), eyeMat, -0.32, 3.85, 0.85));
       grp.add(G.mesh(G.sphere(0.11, 8, 6), eyeMat, 0.32, 3.85, 0.85));
 
-      const mouthMat = G.mat({ color: 0x301418, key: 'sgs_mouth' });
+      const mouthMat = G.mat({ color: 0x301418, key: 'jad_mouth' });
       this.mouthMesh = G.mesh(G.box(0.32, 0.14, 0.08), mouthMat, 0, 3.5, 0.88);
       grp.add(this.mouthMesh);
 
-      const tieMat = G.mat({ color: 0xe83030, key: 'sgs_tie' });
+      const tieMat = G.mat({ color: 0xe83030, key: 'jad_tie' });
       this._tie(tieMat, -0.12, grp);
       this._tie(tieMat, 0.12, grp);
 
@@ -23142,9 +23655,9 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
   /* --------------------------------------------------------- déclaration */
 
   MP.Minigames.register({
-    id: 'shy_guy_says',
+    id: 'jacques_a_dit',
     name: 'Jacques a Dit',
-    nameEn: 'Shy Guy Says',
+    nameEn: 'Simon Says',
     type: '4p',
     counts: [2, 3, 4, 5, 6],
     duration: 0,
@@ -23154,7 +23667,7 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
     scoreLabel: 'manches',
     record: null,
     music: 'mg_tense',
-    create: (ctx) => new ShyGuySays(ctx),
+    create: (ctx) => new JacquesADit(ctx),
   });
 })(window.MP = window.MP || {});
 
@@ -23713,7 +24226,7 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
         const safe = safeSpeed(this.track, here.curv);
         if (car.speed > safe * DERAIL_TOL) {
           car.derailT = DERAIL_TIME;
-          MP.Audio.play('boo');
+          MP.Audio.play('fantome');
           ctx.shake(0.08, 0.16);
           ctx.dust(here.x, 0.15, here.z, 6);
         }
@@ -23839,16 +24352,19 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
 </script>
 <script data-file="src/minigames/4p/orchestre.js">
 /* =========================================================================
-   « Orchestre » (Bandstand) — 2 à 6 joueurs · ~28 s
+   « Orchestre » (Bandstand) — 2 à 6 joueurs · ~30 s
    -------------------------------------------------------------------------
    Un concours de précision rythmique. Chaque personnage tient un instrument
    différent (grosse caisse, trompette, guitare, cymbales) et doit appuyer
    sur A pile au bon moment : une portée défile en haut de l'écran, avec des
    notes qui glissent vers une ligne de jugement commune à tous les joueurs
    (même rythme pour tous — c'est un concours de précision, pas de parties
-   séparées). Le rythme est variable : une phrase de croches, noires et notes
-   pointées revient en boucle, il faut donc l'écouter et non taper à intervalle
-   fixe. PARFAIT / BIEN / RATÉ. Score = pourcentage de réussite.
+   séparées). PARFAIT / BIEN / RATÉ. Score = pourcentage de réussite.
+
+   Le morceau est le RYTHME d'une musique connue (Frère Jacques, Joyeux
+   anniversaire, la 5e de Beethoven…), tirée parmi neuf sur ctx.rng — donc la
+   même sur toutes les machines en ligne. Il est joué trois fois de suite, de
+   plus en plus vite.
    ========================================================================= */
 (function (MP) {
   'use strict';
@@ -23857,19 +24373,49 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
   const G = MP.Gfx;
   const T = MP.Tex;
 
-  const NUM_NOTES = 32;
-  const LEAD_IN = 1.4;
-  // Rythme variable : l'écart entre deux notes n'est plus constant, il suit une
-  // phrase musicale de 8 valeurs exprimées en croches (BEAT), répétée en boucle.
-  // Moyenne 2.5 croches = 0.85 s → ~32 notes en ~28 s, comme avant.
-  // Contrainte : le plus petit écart doit rester ≥ 2 × MISS_W, sinon les fenêtres
-  // de jugement de deux notes voisines se chevaucheraient.
-  const BEAT = 0.34;
-  const GAPS = [2, 2, 2, 4, 2, 2, 3, 3];
+  const LEAD_IN = 2.2;
   const PERFECT_W = 0.09;
   const GOOD_W = 0.20;
-  const MISS_W = 0.34;
+  const MISS_W = 0.30;
   const SAFETY_T = 60;
+
+  // ---- les morceaux -------------------------------------------------------
+  // `beats` : durée de chaque note, en unités (1 = la note la plus courte du
+  // morceau) ; la dernière valeur ne sert qu'à mesurer la fin du passage.
+  // `unit` : durée de l'unité en secondes au premier passage.
+  // Les passages suivants sont joués à SPEEDS[k] fois cette vitesse, avec un
+  // silence de REST secondes entre deux passages.
+  // Contrainte : au passage le plus rapide, deux notes voisines doivent rester
+  // écartées d'au moins MIN_GAP, sinon on ne peut plus les départager ; les
+  // fenêtres de jugement se resserrent d'elles-mêmes sur les notes serrées
+  // (cf. lo / hi dans build), mais pas en dessous de ce plancher.
+  const SPEEDS = [1, 1.3, 1.7];
+  const REST = 2.2;
+  const MIN_GAP = 0.34;
+  const UNIT_MIN = MIN_GAP * SPEEDS[SPEEDS.length - 1];
+  const TUNES = [
+    { name: 'Frère Jacques', unit: 0.60,
+      beats: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 2] },
+    { name: 'Au clair de la lune', unit: 0.60,
+      beats: [1, 1, 1, 1, 2, 2, 1, 1, 1, 1, 2, 2] },
+    { name: 'Joyeux anniversaire', unit: 0.58,
+      beats: [1, 1, 2, 2, 2, 4, 1, 1, 2, 2, 2, 2] },
+    { name: 'Ah ! vous dirai-je, maman', unit: 0.58,
+      beats: [1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 2] },
+    { name: 'Vive le vent', unit: 0.58,
+      beats: [1, 1, 2, 1, 1, 2, 1, 1, 1, 1, 2] },
+    { name: 'Symphonie n° 5', unit: 0.58,
+      beats: [1, 1, 1, 5, 1, 1, 1, 5] },
+    { name: 'Bella Ciao', unit: 0.58,
+      beats: [1, 1, 2, 1, 1, 2, 1, 1, 2, 2, 4] },
+    { name: 'La Cucaracha', unit: 0.58,
+      beats: [1, 1, 1, 3, 3, 1, 1, 1, 3, 3] },
+    { name: 'Sur le pont d\'Avignon', unit: 0.58,
+      beats: [1, 1, 2, 1, 1, 2, 1, 1, 2, 1, 1, 2] },
+  ];
+  const PASS_LABEL = ['1er passage', '2e passage · PLUS VITE', '3e passage · ENCORE PLUS VITE'];
+  const PASS_COLOR = ['#ffcf60', '#ffa040', '#ff6a3a'];
+  const BEAM_GAP = 0.45;        // en dessous, les notes sont liées (rafale)
 
   const SEAT_PITCH = 3.05;   // écart d'un pupitre au suivant
   // sound : timbre joué par MP.Audio.note() pour chaque instrument.
@@ -23892,12 +24438,41 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
     return Math.sqrt(-2 * Math.log(u)) * Math.cos(U.TAU * v);
   }
 
+  /**
+   * Déroule un morceau : trois passages de plus en plus rapides, séparés par
+   * un silence. Renvoie les notes { time, pass, lo, hi } où lo / hi sont les
+   * bornes de la fenêtre de jugement avant / après la note — MISS_W, ou la
+   * moitié de l'écart avec la voisine quand elle est plus proche que ça.
+   */
+  function unroll(tune) {
+    const unit = Math.max(tune.unit, UNIT_MIN);
+    const notes = [];
+    let t = LEAD_IN;
+    for (let pass = 0; pass < SPEEDS.length; pass++) {
+      const u = unit / SPEEDS[pass];
+      for (let n = 0; n < tune.beats.length; n++) {
+        notes.push({ time: t, pass });
+        t += tune.beats[n] * u;
+      }
+      t = notes[notes.length - 1].time + REST;
+    }
+    for (let n = 0; n < notes.length; n++) {
+      const prev = n > 0 ? (notes[n].time - notes[n - 1].time) / 2 : MISS_W;
+      const next = n < notes.length - 1 ? (notes[n + 1].time - notes[n].time) / 2 : MISS_W;
+      notes[n].lo = Math.min(MISS_W, prev);
+      notes[n].hi = Math.min(MISS_W, next);
+    }
+    return notes;
+  }
+
   class Orchestre {
     constructor(ctx) {
       this.ctx = ctx;
+      this.tune = null;
       this.notes = [];
-      this.cursor = [0, 0, 0, 0];
-      this.totalWeight = [0, 0, 0, 0];
+      this.cursor = [];
+      this.totalWeight = [];
+      this.passShown = 0;
       this.finished = false;
     }
 
@@ -23924,12 +24499,11 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
         ctx.add(spot);
       });
 
-      // chronologie des notes
-      let t = LEAD_IN;
-      for (let n = 0; n < NUM_NOTES; n++) {
-        this.notes.push({ time: t });
-        t += BEAT * GAPS[n % GAPS.length];
-      }
+      // le morceau : tiré sur ctx.rng, donc le même sur toutes les machines
+      this.tune = ctx.rng.pick(TUNES);
+      this.notes = unroll(this.tune);
+      this.cursor = ctx.active.map(() => 0);
+      this.totalWeight = ctx.active.map(() => 0);
 
       ctx.spawnActors(ctx.rowPositions(SEAT_PITCH * (ctx.count - 1), 0, 0), { scale: 1.12 });
       ctx.active.forEach((i, k) => {
@@ -23990,7 +24564,7 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
     /* ------------------------------------------------------------ démarrage */
 
     start() {
-      this.ctx.banner('À VOS INSTRUMENTS !', 1.7, { color: '#ffe0f0' });
+      this.ctx.banner('♪ ' + this.tune.name + ' ♪', 1.9, { color: '#ffe0f0' });
     }
 
     /* --------------------------------------------------------------- boucle */
@@ -23998,10 +24572,21 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
     update(dt) {
       const ctx = this.ctx;
       if (this.finished) return;
+      const N = this.notes.length;
+
+      // annonce du passage suivant, pendant le silence qui le précède
+      if (this.passShown < SPEEDS.length - 1) {
+        const first = this.notes.find((n) => n.pass === this.passShown + 1);
+        if (first && ctx.time > first.time - REST + 0.4) {
+          this.passShown++;
+          ctx.banner(this.passShown === 1 ? 'PLUS VITE !' : 'ENCORE PLUS VITE !', 1.2,
+            { color: PASS_COLOR[this.passShown] });
+        }
+      }
 
       ctx.active.forEach((i, k) => {
         let c = this.cursor[k];
-        while (c < NUM_NOTES && ctx.time > this.notes[c].time + MISS_W) {
+        while (c < N && ctx.time > this.notes[c].time + this.notes[c].hi) {
           this._judge(k, i, c, 'rate', 0);
           c = this.cursor[k];
         }
@@ -24010,8 +24595,8 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
         if (ctx.players[i].actor) ctx.players[i].actor.update(dt);
       });
 
-      const allDone = this.cursor.every((c) => c >= NUM_NOTES);
-      const lastT = this.notes[NUM_NOTES - 1].time;
+      const allDone = this.cursor.every((c) => c >= N);
+      const lastT = this.notes[N - 1].time;
       if (allDone || ctx.time > lastT + MISS_W + 0.8 || ctx.time > SAFETY_T) {
         this.finished = true;
         ctx.finish();
@@ -24020,19 +24605,21 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
 
     _tryHit(k, i, now) {
       const c = this.cursor[k];
-      if (c >= NUM_NOTES) return;
-      const delta = now - this.notes[c].time;
-      if (delta < -MISS_W) return; // trop tôt : rien à côté, on ignore
+      if (c >= this.notes.length) return;
+      const n = this.notes[c];
+      const delta = now - n.time;
+      if (delta < -n.lo) return; // trop tôt : rien à côté, on ignore
+      const bound = delta < 0 ? n.lo : n.hi;
       if (Math.abs(delta) <= PERFECT_W) this._judge(k, i, c, 'parfait', 1);
-      else if (Math.abs(delta) <= GOOD_W) this._judge(k, i, c, 'bien', 0.6);
-      else if (Math.abs(delta) <= MISS_W) this._judge(k, i, c, 'rate', 0);
+      else if (Math.abs(delta) <= Math.min(GOOD_W, bound)) this._judge(k, i, c, 'bien', 0.6);
+      else this._judge(k, i, c, 'rate', 0);
     }
 
     _judge(k, i, idx, tier, weight) {
       const ctx = this.ctx;
       this.cursor[k] = idx + 1;
       this.totalWeight[k] += weight;
-      ctx.setScore(i, (this.totalWeight[k] / NUM_NOTES) * 100);
+      ctx.setScore(i, (this.totalWeight[k] / this.notes.length) * 100);
 
       const inst = INSTR[k];
       const vel = tier === 'parfait' ? 0.30 : tier === 'bien' ? 0.20 : 0.10;
@@ -24060,15 +24647,19 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
         const p = ctx.players[i];
         if (!p.isCPU) return;
         const c = this.cursor[k];
-        if (c >= NUM_NOTES) return;
+        if (c >= this.notes.length) return;
         const pad = ctx.vpad(i);
         const d = p.data;
         if (d.planIdx !== c) {
           d.planIdx = c;
           const sk = ctx.skill(i);
           const skN = U.clamp((sk - 0.62) / (1.12 - 0.62), 0, 1);
-          const std = U.lerp(0.15, 0.018, skN);
-          d.planT = this.notes[c].time + gaussRand() * std;
+          const n = this.notes[c];
+          // plus ça va vite, plus les ordinateurs se trompent — surtout les
+          // moins doués ; la reprise après un silence les surprend aussi
+          let std = U.lerp(0.15, 0.018, skN) * U.lerp(1, 1 + 0.35 * n.pass, 1 - skN * 0.6);
+          if (c > 0 && n.time - this.notes[c - 1].time >= REST) std *= U.lerp(1.6, 1.1, skN);
+          d.planT = n.time + gaussRand() * std;
           d.pressed = false;
         }
         if (!d.pressed && ctx.time >= d.planT) { pad.tap('a'); d.pressed = true; }
@@ -24081,22 +24672,55 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
       const ctx = this.ctx;
       const W = MP.Engine.W;
       const judgeX = W / 2, laneY = 76;
-      const PX = 170, LOOK = 2.3;
+      const HALF = 300, PX = 150;
+      const LOOK = (HALF - 12) / PX, BACK = 0.35;
+      const notes = this.notes;
 
-      MP.UI.text(g, 'RYTHME COMMUN — appuyez sur A en rythme', judgeX, laneY - 42,
-        { size: 14, color: '#ffffff', width: 3 });
+      // titre du morceau et passage en cours (celui de la prochaine note)
+      let cur = notes.length - 1;
+      for (let n = 0; n < notes.length; n++) { if (notes[n].time + notes[n].hi >= ctx.time) { cur = n; break; } }
+      const pass = notes[cur].pass;
+      MP.UI.text(g, '♪ ' + this.tune.name.toUpperCase() + ' — ' + PASS_LABEL[pass], judgeX, laneY - 42,
+        { size: 14, color: PASS_COLOR[pass], width: 3 });
 
       g.save();
       g.fillStyle = 'rgba(10,6,24,0.5)';
-      g.fillRect(judgeX - 260, laneY - 24, 520, 48);
+      g.fillRect(judgeX - HALF, laneY - 24, HALF * 2, 48);
+      g.beginPath(); g.rect(judgeX - HALF, laneY - 30, HALF * 2, 60); g.clip();
       g.strokeStyle = '#ffe040'; g.lineWidth = 3;
       g.beginPath(); g.moveTo(judgeX, laneY - 28); g.lineTo(judgeX, laneY + 28); g.stroke();
 
-      this.notes.forEach((n) => {
+      // silence entre deux passages : un tiret et l'annonce, au milieu de l'écart
+      g.font = 'bold italic 12px sans-serif'; g.textAlign = 'center'; g.textBaseline = 'middle';
+      for (let n = 1; n < notes.length; n++) {
+        if (notes[n].pass === notes[n - 1].pass) continue;
+        const gap = notes[n].time - notes[n - 1].time;
+        const mid = (notes[n].time + notes[n - 1].time) / 2 - ctx.time;
+        if (mid < -BACK - gap / 2 || mid > LOOK + gap / 2) continue;
+        const x = judgeX + mid * PX;
+        g.fillStyle = PASS_COLOR[notes[n].pass];
+        g.fillRect(x - 14, laneY - 2, 28, 4);
+        g.fillText(notes[n].pass === 1 ? 'plus vite !' : 'encore plus vite !', x, laneY + 14);
+      }
+
+      // liaisons : les notes rapprochées d'une rafale sont reliées par une barre
+      g.lineWidth = 4; g.lineCap = 'round';
+      for (let n = 1; n < notes.length; n++) {
+        const a = notes[n - 1], b = notes[n];
+        if (b.time - a.time > BEAM_GAP) continue;
+        const da = a.time - ctx.time, db = b.time - ctx.time;
+        if (db < -BACK || da > LOOK) continue;
+        g.strokeStyle = PASS_COLOR[b.pass];
+        g.beginPath(); g.moveTo(judgeX + da * PX, laneY - 14); g.lineTo(judgeX + db * PX, laneY - 14); g.stroke();
+      }
+
+      // les notes, colorées selon le passage
+      notes.forEach((n) => {
         const dtm = n.time - ctx.time;
-        if (dtm < -0.35 || dtm > LOOK) return;
+        if (dtm < -BACK || dtm > LOOK) return;
         const x = judgeX + dtm * PX;
-        g.fillStyle = '#ffcf60'; g.strokeStyle = '#7a4a00'; g.lineWidth = 2;
+        g.fillStyle = PASS_COLOR[n.pass];
+        g.strokeStyle = '#7a4a00'; g.lineWidth = 2;
         g.beginPath(); g.arc(x, laneY, 9, 0, U.TAU); g.fill(); g.stroke();
       });
       g.restore();
@@ -24115,9 +24739,10 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
     type: '4p',
     counts: [2, 3, 4, 5, 6],
     duration: 0,
-    desc: 'Un morceau défile en haut de l\'écran : appuyez sur A pile sur la ligne de jugement ! ' +
-      'PARFAIT, BIEN ou RATÉ selon votre précision. Le rythme varie mais reste le ' +
-      'même pour tout le monde : c\'est votre oreille qui décide du gagnant.',
+    desc: 'Le rythme d\'une musique connue défile en haut de l\'écran : appuyez sur A pile sur la ' +
+      'ligne de jugement ! PARFAIT, BIEN ou RATÉ selon votre précision. Le morceau est joué ' +
+      'trois fois, de plus en plus vite, et il est le même pour tout le monde : c\'est votre ' +
+      'oreille qui décide du gagnant.',
     controls: [['A', 'Jouer en rythme']],
     scoreLabel: '%',
     formatScore: (n) => Math.round(n) + ' %', // n est un pourcentage 0..100
@@ -24549,11 +25174,11 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
 })(window.MP = window.MP || {});
 
 </script>
-<script data-file="src/minigames/4p/piranha_pursuit.js">
+<script data-file="src/minigames/4p/course_poursuite.js">
 /* =========================================================================
-   « Course-Poursuite » (Piranha's Pursuit) — 2 à 6 joueurs, pas de chrono (60 s max)
+   « Course-Poursuite » — 2 à 6 joueurs, pas de chrono (60 s max)
    Un couloir de jungle défile : les joueurs courent pour échapper à une
-   Plante Piranha géante, qui fond sur le coureur le plus en retard et barre
+   Plante Carnivore géante, qui fond sur le coureur le plus en retard et barre
    tout le couloir de ses lianes. Le stick ne sert qu'à se décaler en X, la
    course en Z est automatique (ralentie par obstacles, accélérée par
    champignons).
@@ -24582,7 +25207,7 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
   // bien lisible (et son ombre portée, elle, reste pleine).
   const PLANT_ALPHA = 0.5;
 
-  class PiranhaPursuit {
+  class CoursePoursuite {
     constructor(ctx) {
       this.ctx = ctx;
       this.runners = {};        // par index joueur
@@ -24946,20 +25571,20 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
 
   /* --------------------------------------------------------- déclaration */
   MP.Minigames.register({
-    id: 'piranha_pursuit',
+    id: 'course_poursuite',
     name: 'Course-Poursuite',
-    nameEn: "Piranha's Pursuit",
+    nameEn: 'The Pursuit',
     type: '4p',
     counts: [2, 3, 4, 5, 6],
     duration: 0,
-    desc: 'Fuyez à travers la jungle : une Plante Piranha géante vous poursuit ! ' +
+    desc: 'Fuyez à travers la jungle : une Plante Carnivore géante vous poursuit ! ' +
       'Déplacez-vous pour éviter les obstacles et ramasser les champignons.',
     controls: [['STICK', 'Se décaler']],
     scoreLabel: 'm',
     formatScore: (n) => n.toFixed(0) + ' m',
     record: 'high',
     music: 'mg_tense',
-    create: (ctx) => new PiranhaPursuit(ctx),
+    create: (ctx) => new CoursePoursuite(ctx),
   });
 })(window.MP = window.MP || {});
 
@@ -28397,8 +29022,8 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
    c'est la SEULE façon de sortir (« If you get zapped, you're out! »). Le
    reste du manège ne tue pas, il bouscule : murs de château crénelés qui
    barrent une portion du couloir, rangées de blocs basses qui coupent le
-   couloir de bord en bord (on les saute, ou l'on se perche dessus), Chomps
-   mécaniques qui se ruent d'un bord à l'autre, Boos mécaniques qui ondulent
+   couloir de bord en bord (on les saute, ou l'on se perche dessus), Molosses
+   mécaniques qui se ruent d'un bord à l'autre, Fantômes mécaniques qui ondulent
    en travers ou glissent le long de la piste. Sauter sur la tête d'un rival
    l'étourdit et donne assez d'élan pour franchir un mur.
    Dernier debout gagnant ; ceux qui tiennent jusqu'au bout gagnent ensemble.
@@ -28441,8 +29066,8 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
   // personnage de côté d'un coup — le repoussoir latéral l'éjectant dès que
   // son centre sortait du bloc alors que son corps le chevauchait encore.
   const BLOCK_LIP = 0.15;
-  const CHOMP_R = 0.5, CHOMP_CYCLE = 3;
-  const BOO_R = 0.5, BOO_H = 1.25;
+  const MOLOSSE_R = 0.5, MOLOSSE_CYCLE = 3;
+  const FANTOME_R = 0.5, FANTOME_H = 1.25;
   const AMP_R = 0.4;
   const SPEED = 6.4;                  // vitesse de course, partagée par le Walker et l'IA
 
@@ -28451,10 +29076,10 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
   const STATIONS = [
     { kind: 'wall', gapOut: true },   // passage au ras du bord extérieur
     { kind: 'blocks' },
-    { kind: 'chomp' },
+    { kind: 'molosse' },
     { kind: 'wall', gapOut: false },  // passage au ras du bord intérieur
-    { kind: 'boos' },
-    { kind: 'chomp' },
+    { kind: 'fantomes' },
+    { kind: 'molosse' },
   ];
 
   const laneR = (l) => R_IN + LANE * (l + 0.5);
@@ -28663,8 +29288,8 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
         this.ride.add(grp);
         if (st.kind === 'wall') this._buildWall(grp, a, st.gapOut, stone);
         else if (st.kind === 'blocks') this._buildBlocks(grp, a);
-        else if (st.kind === 'chomp') this._buildChomp(grp, a, iron);
-        else this._buildBoos(grp, a, iron);
+        else if (st.kind === 'molosse') this._buildMolosse(grp, a, iron);
+        else this._buildFantomes(grp, a, iron);
       });
     }
 
@@ -28721,27 +29346,27 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
       this.obs.push({ kind: 'blocks', a: a, r0: r0, r1: r1, ct: 1, st: 0 });
     }
 
-    /** Chomp mécanique : ancré au moyeu, il se rue en travers du couloir. */
-    _buildChomp(grp, a, iron) {
+    /** Molosse mécanique : ancré au moyeu, il se rue en travers du couloir. */
+    _buildMolosse(grp, a, iron) {
       const ironM = G.mat({ map: iron, key: 'sco_ironm' });
-      const dark = G.mat({ color: 0x1c1c26, key: 'sco_chompb' });
+      const dark = G.mat({ color: 0x1c1c26, key: 'sco_molosseb' });
       const white = G.mat({ color: 0xf8f8f8, key: 'sco_tooth' });
 
-      const ball = G.group(0, CHOMP_R + 0.04, R_IN);
-      ball.add(G.mesh(G.sphere(CHOMP_R, 10, 8), dark, 0, 0, 0));
+      const ball = G.group(0, MOLOSSE_R + 0.04, R_IN);
+      ball.add(G.mesh(G.sphere(MOLOSSE_R, 10, 8), dark, 0, 0, 0));
       for (let i = 0; i < 6; i++) {
         const t = G.mesh(G.cone(0.1, 0.26, 4), white,
-          Math.sin((i / 6) * U.TAU) * 0.3, Math.cos((i / 6) * U.TAU) * 0.3, CHOMP_R * 0.78);
+          Math.sin((i / 6) * U.TAU) * 0.3, Math.cos((i / 6) * U.TAU) * 0.3, MOLOSSE_R * 0.78);
         t.rotation.x = Math.PI / 2;
         ball.add(t);
       }
-      ball.add(G.mesh(G.sphere(0.12, 6, 5), white, -0.17, 0.25, CHOMP_R * 0.84));
-      ball.add(G.mesh(G.sphere(0.12, 6, 5), white, 0.17, 0.25, CHOMP_R * 0.84));
+      ball.add(G.mesh(G.sphere(0.12, 6, 5), white, -0.17, 0.25, MOLOSSE_R * 0.84));
+      ball.add(G.mesh(G.sphere(0.12, 6, 5), white, 0.17, 0.25, MOLOSSE_R * 0.84));
       grp.add(ball);
 
       const links = [];
       for (let i = 0; i < 5; i++) {
-        const l = G.mesh(G.torus(0.11, 0.045, 4, 7), ironM, 0, CHOMP_R + 0.04, R_IN);
+        const l = G.mesh(G.torus(0.11, 0.045, 4, 7), ironM, 0, MOLOSSE_R + 0.04, R_IN);
         l.rotation.x = Math.PI / 2;
         grp.add(l);
         links.push(l);
@@ -28749,25 +29374,25 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
       grp.add(G.mesh(G.cyl(0.3, 0.34, 0.5, 8), ironM, 0, 0.25, R_IN - 0.5));
 
       this.obs.push({
-        kind: 'chomp', a: a, node: ball, links: links,
+        kind: 'molosse', a: a, node: ball, links: links,
         rMin: R_IN + 0.15, rMax: R_OUT - 1.3,
-        lx: 0, lr: R_IN + 0.15, rad: CHOMP_R, wx: 0, wz: 0, ext: 0,
+        lx: 0, lr: R_IN + 0.15, rad: MOLOSSE_R, wx: 0, wz: 0, ext: 0,
       });
     }
 
-    /** Deux Boos mécaniques : l'un ondule en travers, l'autre glisse le long. */
-    _buildBoos(grp, a, iron) {
+    /** Deux Fantômes mécaniques : l'un ondule en travers, l'autre glisse le long. */
+    _buildFantomes(grp, a, iron) {
       const ironM = G.mat({ map: iron, key: 'sco_ironm' });
       [0, 1].forEach((m) => {
-        const node = G.group(0, BOO_H * 0.62, MID);
+        const node = G.group(0, FANTOME_H * 0.62, MID);
         node.add(PR.ghost(1.05));
         // le boulon et la tige qui en font une machine
         node.add(G.mesh(G.cyl(0.2, 0.2, 0.12, 8), ironM, 0, 0.46, 0));
         node.add(G.mesh(G.cyl(0.05, 0.05, 0.7, 6), ironM, 0, 0.85, 0));
         grp.add(node);
         this.obs.push({
-          kind: 'boo', a: a, node: node, mode: m,
-          lx: 0, lr: MID, rad: BOO_R, wx: 0, wz: 0,
+          kind: 'fantome', a: a, node: node, mode: m,
+          lx: 0, lr: MID, rad: FANTOME_R, wx: 0, wz: 0,
         });
       });
     }
@@ -28802,7 +29427,7 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
         MP.Audio.play('whistle');
       }
 
-      // Tout le manège accélère, pas seulement le plateau : Chomps et Boos
+      // Tout le manège accélère, pas seulement le plateau : Molosses et Fantômes
       // battent la mesure du moteur.
       this.hazT += dt * (0.8 + ramp * 0.7);
       this._moveHazards();
@@ -28856,8 +29481,8 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
         // Barrières plantées dans le plateau : seul leur repère tourne.
         if (o.kind === 'wall' || o.kind === 'blocks') { o.ct = ct; o.st = st; continue; }
 
-        if (o.kind === 'chomp') {
-          const u = (t % CHOMP_CYCLE) / CHOMP_CYCLE;
+        if (o.kind === 'molosse') {
+          const u = (t % MOLOSSE_CYCLE) / MOLOSSE_CYCLE;
           let ext;
           if (u < 0.5) ext = 0;
           else if (u < 0.62) ext = U.ease.outQuad((u - 0.5) / 0.12);
@@ -28869,10 +29494,10 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
           const shake = ext === 0 ? Math.sin(t * 26) * 0.05 * U.clamp((u - 0.3) / 0.2, 0, 1) : 0;
           o.node.position.z = o.lr + shake;
           for (let i = 0; i < o.links.length; i++) {
-            o.links[i].position.z = U.lerp(R_IN - 0.45, o.lr - CHOMP_R * 0.6,
+            o.links[i].position.z = U.lerp(R_IN - 0.45, o.lr - MOLOSSE_R * 0.6,
               (i + 1) / (o.links.length + 1));
           }
-        } else if (o.kind === 'boo') {
+        } else if (o.kind === 'fantome') {
           if (o.mode === 0) {
             o.lx = -0.95;
             o.lr = MID + Math.sin(t * 1.15) * 1.3;
@@ -28884,7 +29509,7 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
           }
           o.node.position.x = o.lx;
           o.node.position.z = o.lr;
-          o.node.position.y = BOO_H * 0.62 + Math.sin(t * 2.3 + o.mode * 2) * 0.09;
+          o.node.position.y = FANTOME_H * 0.62 + Math.sin(t * 2.3 + o.mode * 2) * 0.09;
           o.node.rotation.y = Math.sin(t * 1.4 + o.mode) * 0.5;
         }
 
@@ -28954,7 +29579,7 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
       if (along < 0) { w.vx -= wx * along; w.vz -= wz * along; }
     }
 
-    /** Chomps et Boos : ils ne tuent pas, ils CATAPULTENT — vers les Chargeurs. */
+    /** Molosses et Fantômes : ils ne tuent pas, ils CATAPULTENT — vers les Chargeurs. */
     _hazards(w, i, dt) {
       const ctx = this.ctx;
       const d = ctx.players[i].data;
@@ -28963,10 +29588,10 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
 
       for (let n = 0; n < this.obs.length; n++) {
         const o = this.obs[n];
-        if (o.kind === 'chomp') {
-          if (w.p.y > CHOMP_R * 1.7) continue;          // sauté par-dessus
-        } else if (o.kind === 'boo') {
-          if (w.p.y > BOO_H) continue;
+        if (o.kind === 'molosse') {
+          if (w.p.y > MOLOSSE_R * 1.7) continue;          // sauté par-dessus
+        } else if (o.kind === 'fantome') {
+          if (w.p.y > FANTOME_H) continue;
         } else continue;
 
         const dx = w.p.x - o.wx, dz = w.p.z - o.wz;
@@ -28975,7 +29600,7 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
 
         let nx = dx / dd, nz = dz / dd;
         let power = 8;
-        if (o.kind === 'chomp') {
+        if (o.kind === 'molosse') {
           // la ruée pousse dans son propre sens : droit vers le bord extérieur
           const rr = Math.hypot(o.wx, o.wz) || 1;
           nx = U.lerp(nx, o.wx / rr, 0.4);
@@ -28985,7 +29610,7 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
           power = 8 + o.ext * 3;
           MP.Audio.play('whack');
         } else {
-          MP.Audio.play('boo');
+          MP.Audio.play('fantome');
         }
         w.launch(nx * power, 4.2, nz * power);
         w.stun(0.55);
@@ -29162,11 +29787,11 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
         if (dIn > 0) vr += dIn * dIn * SPEED * 1.6;
         if (dOut > 0) vr -= dOut * dOut * SPEED * 1.6;
 
-        // -- sauter par-dessus un Chomp ramassé -----------------------------
+        // -- sauter par-dessus un Molosse ramassé -----------------------------
         if (d.jump <= 0 && w.onGround) {
           for (let n = 0; n < this.obs.length; n++) {
             const o = this.obs[n];
-            if (o.kind !== 'chomp') continue;
+            if (o.kind !== 'molosse') continue;
             if (Math.hypot(w.p.x - o.wx, w.p.z - o.wz) < 1.15 + sk * 0.35) {
               pad.tap('a');
               d.jump = 0.9;
@@ -29256,7 +29881,7 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
     desc: 'Le manège tourne de plus en plus vite et vous emporte vers l\'extérieur. ' +
       'Restez dans le couloir : ses deux bords sont hérissés de Chargeurs, et se ' +
       'faire électrocuter est la seule façon de sortir. Murs, rangées de blocs, ' +
-      'Chomps et Boos mécaniques ne tuent pas — ils vous jettent dessus. Une rangée ' +
+      'Molosses et Fantômes mécaniques ne tuent pas — ils vous jettent dessus. Une rangée ' +
       'de blocs barre tout le couloir : maintenez A pour la sauter, ou vous percher ' +
       'dessus. Rebondir sur la tête d\'un rival l\'étourdit et donne assez d\'élan ' +
       'pour franchir un mur.',
@@ -30132,8 +30757,8 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
    Des sandwichs carrés à la taille exacte d'une case, hauts d'un étage (1,3)
    ou de deux (2,6), tombent case par case après un long avertissement —
    l'ombre carrée de la case, qui bat la chamade à la fin — et qui reste
-   dessous finit en tranche, sauf à sauter assez haut pour avoir les pieds
-   au-dessus du pain à l'instant où il touche : on retombe alors dessus.
+   dessous finit en tranche, en l'air comme au sol : le bloc écrase tout ce
+   qu'il croise en descendant, sauter sous une ombre ne sauve personne.
    Ce qui tombe RESTE, sans jamais s'enfoncer : les blocs s'empilent
    exactement les uns sur les autres, sans limite, en un réseau qui monte —
    et la caméra avec lui. Un étage se grimpe d'un saut, deux d'un saut
@@ -30154,6 +30779,7 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
   const BREAD = 0.2;                      // une tranche de pain
   const UNIT = 1.3;                       // un étage : la hauteur d'un sandwich simple
   const FALL_FROM = 13, FALL_T = 0.38;    // départ de la chute au-dessus du cadrage, et sa durée
+  const HEAD = 1.5;                       // hauteur d'un personnage : le bloc écrase dès qu'il l'atteint
   const WARN_T = 1.7, WARN_MIN = 1.0;     // l'ombre s'affiche longtemps avant la chute
   const GIANT_AT = 14;
   const MAX_T = 60;
@@ -30488,6 +31114,9 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
         } else {
           s.y -= s.v * dt;
           s.shadow.position.y = base + 0.03;
+          // en l'air comme au sol : le bloc écrase tout ce qu'il croise en
+          // descendant — sauter sous une ombre ne sauve personne
+          this._crushBelow(s, s.y);
           if (s.y <= base) {
             s.y = base;
             this._impact(s);
@@ -30577,18 +31206,25 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
         speed: 4.4, up: 2.6, gravity: -13, floorY: base,
       });
 
-      this.walkers.forEach((w, k) => {
-        const i = ctx.active[k];
-        if (!ctx.players[i].alive) return;
-        if (this._cellOf(w.p.x, w.p.z) !== s.cell) return;
-        if (w.p.y >= top - 0.02) return;    // les pieds au-dessus du pain : sauvé
-        this._squash(i, k);
-      });
+      // filet : qui serait entré dans la case sous le bloc à la dernière image
+      this._crushBelow(s, base);
 
       if (!this.overflow && top > WALL_H) {
         this.overflow = true;
         ctx.banner('ÇA DÉBORDE !', 1.7, { color: '#ffc020' });
       }
+    }
+
+    /** Écrase les joueurs de la case que le bas du bloc, à `bottom`, a rejoints
+        — la tête suffit : être en l'air n'y change rien. */
+    _crushBelow(s, bottom) {
+      const ctx = this.ctx;
+      this.walkers.forEach((w, k) => {
+        const i = ctx.active[k];
+        if (!ctx.players[i].alive) return;
+        if (this._cellOf(w.p.x, w.p.z) !== s.cell) return;
+        if (w.p.y + HEAD >= bottom) this._squash(i, k);
+      });
     }
 
     _squash(i, k) {
@@ -30626,14 +31262,6 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
     }
 
     /* ------------------------------------------------------------------ IA */
-
-    /** Le sandwich en train de tomber sur cette case, s'il y en a un. */
-    _falling(cell) {
-      for (let n = 0; n < this.sw.length; n++) {
-        if (this.sw[n].cell === cell && this.sw[n].state === 'fall') return this.sw[n];
-      }
-      return null;
-    }
 
     /** La meilleure case parmi la sienne et ses voisines : on fuit les ombres,
         on évite les fosses et les cases occupées, on préfère la hauteur. */
@@ -30682,7 +31310,7 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
         const w = this.walkers[k];
         const sk = ctx.skill(i);
         const d = p.data;
-        if (d.think === undefined) { d.think = 0; d.target = -1; d.holdT = 0; d.dodged = null; }
+        if (d.think === undefined) { d.think = 0; d.target = -1; d.holdT = 0; }
 
         const cur = this._cellOf(w.p.x, w.p.z);
         d.think -= dt;
@@ -30692,20 +31320,15 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
         }
 
         if (d.target === cur) {
-          if (threat[cur] >= 1) {
-            // la case est condamnée et rien n'est accessible : le saut de la
-            // dernière chance, au moment où le pain se met à tomber, pour
-            // avoir les pieds au-dessus de lui à l'impact et retomber dessus
-            const s = this._falling(cur);
-            if (s && d.dodged !== s) {
-              d.dodged = s;
-              if (Math.random() < 0.3 + 0.55 * sk) d.holdT = 0.24;
-            }
-          } else if (ctx.aiStomp(i, w, inGame.filter((o) => Math.abs(o.p.y - w.p.y) < 1), dt, { range: 2.4 })) {
+          // rien de mieux ailleurs : on en profite pour clouer une tête à
+          // portée, sinon on se recentre. Si la case est condamnée et
+          // qu'aucune voisine n'est accessible, il n'y a plus rien à tenter —
+          // sauter sous l'ombre ne sauverait pas.
+          if (threat[cur] === 0
+            && ctx.aiStomp(i, w, inGame.filter((o) => Math.abs(o.p.y - w.p.y) < 1), dt, { range: 2.4 })) {
             return;
-          } else {
-            pad.toward(w.p.x, w.p.z, this._cx(cur), this._cz(cur), 0.6);
           }
+          pad.toward(w.p.x, w.p.z, this._cx(cur), this._cz(cur), 0.6);
         } else {
           const tx = this._cx(d.target), tz = this._cz(d.target);
           pad.toward(w.p.x, w.p.z, tx, tz, 0.15);
@@ -30736,9 +31359,9 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
     counts: [2, 3, 4, 5, 6],
     duration: 0,
     desc: 'Des sandwichs géants s\'empilent case par case dans le panier : fuyez '
-      + 'l\'ombre carrée, ou sautez par-dessus le pain à l\'instant où il touche ! '
-      + 'Ce qui tombe reste et le panier monte : un sandwich se grimpe d\'un saut, '
-      + 'un double (jambon, caprese) d\'un saut appuyé, deux empilés font un mur.',
+      + 'l\'ombre carrée — en l\'air ou au sol, tout ce qui reste dessous finit en '
+      + 'tranche ! Ce qui tombe reste et le panier monte : un étage se grimpe d\'un '
+      + 'saut, deux (jambon, caprese) d\'un saut appuyé, trois font un mur.',
     controls: [['STICK', 'Se déplacer'], ['A', 'Sauter (appuyé : plus haut ; sur une tête : écraser)']],
     scoreLabel: 'temps',
     formatScore: (n) => n.toFixed(1) + ' s',
@@ -36226,7 +36849,7 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
       this._buildTrackMeshes();
       this._buildDangerBands();
       this._buildSlick();
-      this._buildBoostPads();
+      this._buildFantomestPads();
       // deux bobsleighs (un par équipe), couleurs d'équipe
       const teamColor = [0xf05050, 0x5090f0];
       const start = sampleTrack(this.track, 0);
@@ -36400,7 +37023,7 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
         ctx.add(new THREE.Mesh(geo, mat));
       });
     }
-    _buildBoostPads() {
+    _buildFantomestPads() {
       const ctx = this.ctx;
       const glowMat = G.mat({ key: 'bob_boost', color: 0x40e0ff, emissive: 0x1a80a0, emissiveIntensity: 0.8 });
       this._boostMeshes = this.boostPads.map((s) => {
@@ -37903,7 +38526,7 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
         if (U.dist2(d.x, d.z, h.x, h.z) < 1.5 * 1.5 && Math.abs(d.y - h.y) < 1.3) {
           h.hitSet[d.i] = true;
           d.dizzyT = 2.2;
-          MP.Audio.play('boo');
+          MP.Audio.play('fantome');
           ctx.fx.burst(8, { x: d.x, y: d.y, z: d.z, color: 0xffffff, size: 0.2, life: 0.4, speed: 3, up: 2, gravity: -6 });
         }
       });
@@ -39192,7 +39815,7 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
 /* =========================================================================
    MINI-JEU SOLO — « Tour de Blocs » (Knock Block Tower)
    -------------------------------------------------------------------------
-   1 joueur · 45 s · jeu de pièces
+   1 joueur · 25 s · jeu de pièces
    Une tour de blocs empilés monte dans le ciel. À chaque étage, trois
    blocs sont posés côte à côte : un seul est creux. Le joueur se déplace
    latéralement sur sa plateforme et frappe vers le haut avec A. Un bloc
@@ -39210,7 +39833,7 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
   const BLOCK_W = 1.25, BLOCK_H = 1.0, BLOCK_D = 1.25;
   const ROW_GAP = 0.2;
   const BLOCKS_PER_FLOOR = 3;
-  const MAX_FLOORS = 12;
+  const MAX_FLOORS = 30;
   const HALF_W = (BLOCKS_PER_FLOOR * (BLOCK_W + ROW_GAP)) / 2;
   const PUNCH_CD = 0.4;
 
@@ -39431,7 +40054,7 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
     name: 'Tour de Blocs',
     nameEn: 'Knock Block Tower',
     type: 'solo',
-    duration: 45,
+    duration: 25,
     desc: 'Frappez le bloc creux avec A pour monter d\'un étage. Un bloc plein vous ' +
       'étourdit un instant : repérez le bon avant la fin du temps !',
     controls: [['STICK', 'Se déplacer'], ['A', 'Frapper vers le haut']],
@@ -39603,7 +40226,7 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
       this.ambientT -= dt;
       if (this.ambientT <= 0 && this.phase === 'shuffle') {
         this.ambientT = U.rand.range(1.8, 3.2);
-        MP.Audio.play(Math.random() < 0.5 ? 'laugh' : 'boo');
+        MP.Audio.play(Math.random() < 0.5 ? 'laugh' : 'fantome');
       }
       if (this.phase === 'intro') this._updateIntro(dt);
       else if (this.phase === 'shuffle') this._updateShuffle(dt);
@@ -39618,7 +40241,7 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
       this.ghost.position.y = DOOR_H * 0.62 + Math.sin(this.flickerT * 4) * 0.06;
       if (this.introT < 0.55) {
         this.ghost.material.opacity = U.clamp(this.introT / 0.55, 0, 1);
-        if (this.introT < 0.5 && this.ghost.visible) { MP.Audio.play('boo'); }
+        if (this.introT < 0.5 && this.ghost.visible) { MP.Audio.play('fantome'); }
       }
       if (this.introT <= 0) { this.ghost.visible = false; this.phase = 'shuffle'; }
     }
@@ -39697,7 +40320,7 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
         this.resultT = 1.3;
       } else {
         this._reveal(nearest);
-        MP.Audio.play('boo');
+        MP.Audio.play('fantome');
         MP.Audio.play('laugh');
         this.phase = 'resultBad';
         this.resultT = 1.7;
@@ -39775,7 +40398,7 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
    Une grande machine à sous s'illumine devant le joueur. Il tire le levier
    (A) pour lancer les trois rouleaux, puis les arrête l'un après l'autre
    avec A. Trois étoiles rapportent 30 pièces, trois symboles identiques 20,
-   deux identiques 10 ; un Koopa visible annule tout le tirage. Trois essais
+   deux identiques 10 ; un Dragon visible annule tout le tirage. Trois essais
    maximum sont accordés, seul le meilleur gain compte.
    ========================================================================= */
 (function (MP) {
@@ -39786,7 +40409,7 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
   const T = MP.Tex;
 
   const SYM_COUNT = 5;
-  const SYM_MUSH = 0, SYM_FLOWER = 1, SYM_STAR = 2, SYM_COIN = 3, SYM_KOOPA = 4;
+  const SYM_MUSH = 0, SYM_FLOWER = 1, SYM_STAR = 2, SYM_COIN = 3, SYM_DRAGON = 4;
   const SPIN_SPEED = 3.4;      // cellules par seconde
   const STOP_DUR = 0.16;       // durée de la décélération finale d'un rouleau
   const MAX_ATTEMPTS = 3;
@@ -39794,7 +40417,7 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
 
   /** Calcule le gain d'un tirage à partir des trois symboles obtenus. */
   function payout(syms) {
-    if (syms.indexOf(SYM_KOOPA) >= 0) return 0;
+    if (syms.indexOf(SYM_DRAGON) >= 0) return 0;
     if (syms[0] === SYM_STAR && syms[1] === SYM_STAR && syms[2] === SYM_STAR) return 30;
     if (syms[0] === syms[1] && syms[1] === syms[2]) return 20;
     if (syms[0] === syms[1] || syms[1] === syms[2] || syms[0] === syms[2]) return 10;
@@ -40020,9 +40643,9 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
       ctx.soloCoins = this.bestGain;
       ctx.setScore(this.playerIndex, this.bestGain);
 
-      if (syms.indexOf(SYM_KOOPA) >= 0) {
+      if (syms.indexOf(SYM_DRAGON) >= 0) {
         MP.Audio.play('error');
-        ctx.banner('KOOPA... PERDU !', 1.4, { color: '#ff7050' });
+        ctx.banner('DRAGON... PERDU !', 1.4, { color: '#ff7050' });
       } else if (gain === 30) {
         MP.Audio.play('star');
         ctx.banner('TRIPLE ÉTOILE !', 1.7, { color: '#ffe040' });
@@ -40135,7 +40758,7 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
         let targetIdx;
         if (k === 0) targetIdx = SYM_STAR;
         else {
-          const prevOk = this.reels[0].stopped && this.reels[0].symbol !== SYM_KOOPA;
+          const prevOk = this.reels[0].stopped && this.reels[0].symbol !== SYM_DRAGON;
           targetIdx = prevOk ? this.reels[0].symbol : U.rand.int(0, SYM_COUNT - 1);
         }
         const skillBlend = U.clamp((sk - 0.62) / 0.5, 0, 1);
@@ -40170,303 +40793,12 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
     type: 'solo',
     duration: 0,
     desc: 'Tirez le levier avec A, puis arrêtez chaque rouleau l\'un après l\'autre avec A. ' +
-      'Trois étoiles rapportent gros, mais un Koopa annule tout le tirage ! Trois essais, seul le meilleur compte.',
+      'Trois étoiles rapportent gros, mais un Dragon annule tout le tirage ! Trois essais, seul le meilleur compte.',
     controls: [['A', 'Tirer le levier / Arrêter un rouleau']],
     scoreLabel: 'gain',
     record: 'high',
     music: 'mg_solo',
     create: (ctx) => new SlotMachine(ctx),
-  });
-})(window.MP = window.MP || {});
-
-</script>
-<script data-file="src/minigames/solo/coin_shower.js">
-/* =========================================================================
-   MINI-JEU SOLO — « Pluie de Pièces » (Coin Shower)
-   -------------------------------------------------------------------------
-   1 joueur · 30 s · jeu de pièces
-   Sur une place pavée en fête, des pièces tombent du ciel selon des
-   trajectoires variées. Il faut se déplacer et sauter pour les attraper :
-   certaines sont grosses (elles valent 5). Des bombes tombent aussi —
-   les toucher coûte 5 pièces et étourdit une seconde. La pluie s'intensifie
-   avec le temps.
-   ========================================================================= */
-(function (MP) {
-  'use strict';
-
-  const U = MP.Util;
-  const G = MP.Gfx;
-  const T = MP.Tex;
-
-  const ARENA = 8.5;
-  const GRAVITY = 9.2;
-  const CATCH_R_COIN = 0.85;
-  const CATCH_R_BIG = 1.25;
-  const CATCH_R_BOMB = 0.8;
-  const LAND_GRACE = 0.4;
-
-  class CoinShower {
-    constructor(ctx) {
-      this.ctx = ctx;
-      this.playerIndex = 0;
-      this.walker = null;
-      this.items = [];
-      this.spawnT = 0.6;
-      this.combo = 0;
-      this.lastCatchT = -99;
-      this.coinMat = null;
-      this.bigMat = null;
-      this.bombBodyMat = null;
-      this.bombFuseMat = null;
-      this.balloons = [];
-    }
-
-    /* ------------------------------------------------------------- décor */
-
-    build() {
-      const ctx = this.ctx;
-      ctx.fog(0x6fc8f0, 30, 110);
-      ctx.sky({ stops: [[0, '#3f9ae8'], [0.55, '#8fd0f4'], [1, '#eafcff']], clouds: true, radius: 200 });
-      ctx.lightScene({ sunDir: [0.4, 1, 0.5] });
-
-      const paveTex = T.make('cs_pave', 64, (g, w, h) => {
-        T.fill(g, w, h, '#d8cdb8');
-        T.checker(g, w, h, '#e0d6c2', '#cabd9e', 8);
-        T.noise(g, w, h, 0.05, 6, true);
-      });
-      ctx.floor(ARENA * 2, ARENA * 2, paveTex, { tile: 10 });
-
-      this.coinMat = G.mat({ key: 'cs_coin', color: 0xffd23a, emissive: 0x664400, emissiveIntensity: 0.4 });
-      this.bigMat = G.mat({ key: 'cs_bigcoin', color: 0xffe080, emissive: 0x996600, emissiveIntensity: 0.55 });
-      this.bombBodyMat = G.mat({ key: 'cs_bombbody', color: 0x141018 });
-      this.bombFuseMat = G.mat({ key: 'cs_bombfuse', color: 0x8a5a30 });
-
-      this._buildDecor();
-
-      ctx.spawnActors([[0, 0, 2, Math.PI]], { scale: 1.16 });
-      this.playerIndex = ctx.active[0];
-      this.walker = ctx.makeWalker(this.playerIndex, { speed: 6.4, jump: 9.6, radius: 0.42, canJump: true });
-
-      ctx.setCamera(0, 11.6, 12.4, 0, 1.0, -1.2);
-    }
-
-    _buildDecor() {
-      const ctx = this.ctx;
-      const cols = [0xff4060, 0x40a0ff, 0xffe040, 0x40e080];
-      const balloonMats = cols.map((c, idx) => G.mat({ color: c, key: 'cs_balloon' + idx }));
-      const stringMat = G.mat({ color: 0x402010, key: 'cs_string' });
-      const poleMat = G.mat({ color: 0xe8e0d0, key: 'cs_pole' });
-      for (let i = 0; i < 8; i++) {
-        const a = (i / 8) * U.TAU;
-        const x = Math.cos(a) * (ARENA - 0.6), z = Math.sin(a) * (ARENA - 0.6);
-        const baseY = 3.3 + (i % 3) * 0.35;
-        const b = G.mesh(G.sphere(0.42, 10, 8), balloonMats[i % 4], x, baseY, z);
-        ctx.add(b);
-        ctx.add(G.mesh(G.cyl(0.02, 0.02, 1.3, 4), stringMat, x, baseY - 0.85, z));
-        this.balloons.push({ mesh: b, x, z, baseY, ph: Math.random() * U.TAU });
-      }
-      [[-ARENA + 0.6, -ARENA + 0.6], [ARENA - 0.6, -ARENA + 0.6], [-ARENA + 0.6, ARENA - 0.6], [ARENA - 0.6, ARENA - 0.6]].forEach((p) => {
-        ctx.add(G.mesh(G.cyl(0.09, 0.11, 3.2, 8), poleMat, p[0], 1.6, p[1]));
-        ctx.add(G.mesh(G.cone(0.24, 0.4, 8), G.mat({ color: 0xff5050, key: 'cs_conetop' }), p[0], 3.4, p[1]));
-      });
-    }
-
-    _makeCoinMesh(big) {
-      const m = G.mesh(G.cyl(0.28, 0.28, 0.06, 12), big ? this.bigMat : this.coinMat);
-      m.rotation.x = Math.PI / 2;
-      if (big) m.scale.setScalar(1.6);
-      return m;
-    }
-
-    _makeBombMesh() {
-      const grp = G.group(0, 0, 0);
-      grp.add(G.mesh(G.sphere(0.32, 10, 8), this.bombBodyMat));
-      const fuse = G.mesh(G.cyl(0.035, 0.05, 0.28, 6), this.bombFuseMat, 0, 0.34, 0);
-      fuse.rotation.z = 0.35;
-      grp.add(fuse);
-      return grp;
-    }
-
-    /* ------------------------------------------------------------ démarrage */
-
-    start() {
-      this.ctx.soloCoins = 0;
-      this.ctx.banner('RAMASSEZ LES PIÈCES !', 1.5, { color: '#ffe040' });
-    }
-
-    _spawnItem() {
-      const ctx = this.ctx;
-      const bomb = ctx.rng.chance(0.16);
-      const big = !bomb && ctx.rng.chance(0.18);
-      const x = ctx.rng.range(-ARENA + 1, ARENA - 1);
-      const z = ctx.rng.range(-ARENA + 1, ARENA - 1);
-      const y = ctx.rng.range(8, 11);
-      const vx = ctx.rng.range(-1.7, 1.7);
-      const vz = ctx.rng.range(-1.7, 1.7);
-      const mesh = bomb ? this._makeBombMesh() : this._makeCoinMesh(big);
-      mesh.position.set(x, y, z);
-      ctx.add(mesh);
-      this.items.push({
-        mesh, x, y, z, vx, vy: 0, vz, big, bomb,
-        taken: false, landed: false, landT: 0, spin: Math.random() * 6,
-      });
-    }
-
-    /* --------------------------------------------------------------- boucle */
-
-    update(dt) {
-      const ctx = this.ctx;
-
-      this.walker.update(dt, ctx.pad(this.playerIndex));
-      this.walker.clampRect(-ARENA + 0.4, ARENA - 0.4, -ARENA + 0.4, ARENA - 0.4);
-
-      this.balloons.forEach((b) => {
-        b.ph += dt;
-        b.mesh.position.y = b.baseY + Math.sin(b.ph * 1.4) * 0.14;
-        b.mesh.position.x = b.x + Math.sin(b.ph * 0.7) * 0.1;
-      });
-
-      // cadence de spawn qui s'intensifie avec le temps
-      this.spawnT -= dt;
-      if (this.spawnT <= 0) {
-        this._spawnItem();
-        const density = U.clamp(ctx.time / 30, 0, 1);
-        const interval = U.lerp(0.85, 0.22, density);
-        this.spawnT = interval * ctx.rng.range(0.7, 1.3);
-      }
-
-      const px = this.walker.p.x, py = this.walker.p.y, pz = this.walker.p.z;
-
-      for (let i = this.items.length - 1; i >= 0; i--) {
-        const it = this.items[i];
-        if (it.taken) continue;
-
-        if (!it.landed) {
-          it.vy -= GRAVITY * dt;
-          it.x += it.vx * dt; it.y += it.vy * dt; it.z += it.vz * dt;
-          it.x = U.clamp(it.x, -ARENA + 0.3, ARENA - 0.3);
-          it.z = U.clamp(it.z, -ARENA + 0.3, ARENA - 0.3);
-          if (it.y <= 0.22) { it.y = 0.22; it.landed = true; it.vx = it.vy = it.vz = 0; }
-          if (!it.bomb && Math.random() < dt * 5) {
-            ctx.fxGlow.burst(1, { x: it.x, y: it.y, z: it.z, color: 0xffe060, size: 0.16, life: 0.32, up: 0.6, speed: 0.4 });
-          }
-        } else {
-          it.landT += dt;
-          if (it.landT > LAND_GRACE) {
-            ctx.root.remove(it.mesh);
-            this.items.splice(i, 1);
-            continue;
-          }
-        }
-
-        it.spin += dt * 8;
-        it.mesh.position.set(it.x, it.y, it.z);
-        if (!it.bomb) it.mesh.rotation.z = it.spin;
-        else it.mesh.rotation.y = it.spin * 0.4;
-
-        const d3 = Math.hypot(px - it.x, py - it.y, pz - it.z);
-        const captureR = it.bomb ? CATCH_R_BOMB : (it.big ? CATCH_R_BIG : CATCH_R_COIN);
-        if (d3 < captureR) this._catch(it, i);
-      }
-    }
-
-    _catch(it, index) {
-      const ctx = this.ctx;
-      it.taken = true;
-      ctx.root.remove(it.mesh);
-      this.items.splice(index, 1);
-
-      if (it.bomb) {
-        ctx.addScore(this.playerIndex, -5);
-        this.walker.stun(1.0);
-        this.combo = 0;
-        MP.Audio.play('explode');
-        ctx.fx.burst(14, { x: it.x, y: it.y + 0.2, z: it.z, color: 0x303038, size: 0.32, life: 0.5, speed: 4.5, up: 3, gravity: -14 });
-        ctx.float3('-5', it.x, it.y + 1.0, it.z, { color: '#ff6050', scale: 1 });
-        ctx.shake(0.14, 0.22);
-      } else {
-        const gain = it.big ? 5 : 1;
-        ctx.addScore(this.playerIndex, gain);
-        if (ctx.time - this.lastCatchT < 0.55) this.combo++; else this.combo = 1;
-        this.lastCatchT = ctx.time;
-        MP.Audio.play(this.combo > 1 ? 'coinMulti' : 'coin', Math.min(this.combo, 8));
-        ctx.float3('+' + gain, it.x, it.y + 0.9, it.z, { color: it.big ? '#fff2a0' : '#ffe680', scale: it.big ? 1.15 : 0.85 });
-        ctx.sparks(it.x, it.y, it.z, it.big ? 14 : 8, 0xffd23a);
-      }
-      ctx.soloCoins = Math.min(20, Math.floor(ctx.score(this.playerIndex) / 2));
-    }
-
-    /* ------------------------------------------------------------------ IA */
-
-    ai(dt) {
-      const ctx = this.ctx;
-      const i = this.playerIndex;
-      const p = ctx.players[i];
-      if (!p.isCPU) return;
-      const pad = ctx.vpad(i);
-      const sk = ctx.skill(i);
-      const d = p.data;
-      const w = this.walker;
-
-      if (d.retarget === undefined) d.retarget = 0;
-      d.retarget -= dt;
-      if (!d.target || d.target.taken || d.retarget <= 0) {
-        d.retarget = 0.22;
-        let best = null, bestScore = 1e9;
-        this.items.forEach((it) => {
-          if (it.taken || it.bomb) return;
-          const score = U.dist2(w.p.x, w.p.z, it.x, it.z) + it.y * it.y * 0.12;
-          if (score < bestScore) { bestScore = score; best = it; }
-        });
-        d.target = best;
-      }
-
-      let avoidX = 0, avoidZ = 0;
-      this.items.forEach((it) => {
-        if (!it.bomb || it.taken) return;
-        const dx = w.p.x - it.x, dz = w.p.z - it.z, dist = Math.hypot(dx, dz);
-        if (dist < 1.7 && it.y < 3.4) { avoidX += dx / (dist + 0.01); avoidZ += dz / (dist + 0.01); }
-      });
-
-      const skillBlend = U.clamp((sk - 0.62) / 0.5, 0, 1);
-      const jitter = U.lerp(0.55, 0.08, skillBlend);
-      if (!d.target) { pad.set(avoidX * 0.7, avoidZ * 0.7); return; }
-      const tx = d.target.x + avoidX * 1.5 + (Math.random() - 0.5) * jitter;
-      const tz = d.target.z + avoidZ * 1.5 + (Math.random() - 0.5) * jitter;
-      pad.toward(w.p.x, w.p.z, tx, tz, 0.1);
-      if (d.target.y < 2.8 && w.onGround && Math.random() < 0.55 * sk) pad.tap('a');
-    }
-
-    /* ----------------------------------------------------------------- HUD */
-
-    drawHud(g) {
-      if (this.combo > 1 && this.ctx.time - this.lastCatchT < 1) {
-        MP.UI.text(g, 'COMBO x' + this.combo, MP.Engine.W - 16, 76, {
-          size: 20, align: 'right', color: '#ffe040', width: 3.4,
-        });
-      }
-    }
-
-    onEnd() {
-      this.walker.frozen = true;
-    }
-  }
-
-  /* --------------------------------------------------------- déclaration */
-
-  MP.Minigames.register({
-    id: 'coin_shower',
-    name: 'Pluie de Pièces',
-    nameEn: 'Coin Shower',
-    type: 'solo',
-    duration: 30,
-    desc: 'Déplacez-vous et sautez pour attraper les pièces qui tombent du ciel ! Les grosses pièces ' +
-      'valent 5, mais gare aux bombes noires : elles coûtent 5 pièces et vous étourdissent.',
-    controls: [['STICK', 'Se déplacer'], ['A', 'Sauter']],
-    scoreLabel: 'pièces',
-    record: 'high',
-    music: 'mg_solo',
-    create: (ctx) => new CoinShower(ctx),
   });
 })(window.MP = window.MP || {});
 
@@ -40691,275 +41023,6 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
     record: 'high',
     music: 'mg_solo',
     create: (ctx) => new HandInHand(ctx),
-  });
-})(window.MP = window.MP || {});
-
-</script>
-<script data-file="src/minigames/solo/pedal_power.js">
-/* =========================================================================
-   « Coup de Pédale » (Pedal Power) — 1 joueur · endurance
-   -------------------------------------------------------------------------
-   Le personnage pédale sur une route de campagne qui défile. On pédale en
-   basculant le stick de gauche à droite : chaque bascule complète donne une
-   impulsion. Le relief fait le reste.
-   ========================================================================= */
-(function (MP) {
-  'use strict';
-
-  const U = MP.Util;
-  const G = MP.Gfx;
-  const T = MP.Tex;
-
-  const ROAD_W = 6;
-  const SEG = 8;               // longueur d'un tronçon de route
-  const NSEG = 14;             // tronçons recyclés en boucle
-
-  class PedalPower {
-    constructor(ctx) {
-      this.ctx = ctx;
-      this.dist = 0;
-      this.speed = 0;
-      this.lastSide = 0;
-      this.pedal = 0;          // angle des pédales
-      this.segments = [];
-      this.decor = [];
-    }
-
-    /** Profil de la route : ondulations douces, en unités de hauteur. */
-    _slopeAt(d) {
-      return Math.sin(d * 0.035) * 1.0 + Math.sin(d * 0.011 + 1.7) * 1.8;
-    }
-    /** Pente locale (dérivée), utilisée pour la physique. */
-    _gradAt(d) {
-      return (this._slopeAt(d + 0.5) - this._slopeAt(d - 0.5));
-    }
-
-    /* -------------------------------------------------------------- décor */
-
-    build() {
-      const ctx = this.ctx;
-
-      ctx.fog(0xbfe4f8, 45, 150);
-      ctx.sky({ stops: [[0, '#4aa4ec'], [0.5, '#93d4f6'], [1, '#ecf8ff']], clouds: true, radius: 220 });
-      ctx.lightScene({ sunDir: [0.5, 1, 0.3] });
-
-      // prairie de fond
-      const grass = T.grass('#5aae40', '#77cc4e', 'pw_grass');
-      const gnd = ctx.floor(220, 240, grass, { tile: 30 });
-      gnd.position.y = -0.02;
-
-      // route : tronçons recyclés
-      const road = T.make('pw_road', 64, (g, w, h) => {
-        T.fill(g, w, h, '#6a6a72');
-        T.noise(g, w, h, 0.10, 7, true);
-        g.fillStyle = '#e8e4d0';
-        for (let i = 0; i < 2; i++) g.fillRect(w / 2 - 2, i * 32 + 6, 4, 20);
-      });
-      road.repeat.set(1, 2);
-      const roadMat = G.mat({ key: 'pw_roadm', map: road });
-      for (let i = 0; i < NSEG; i++) {
-        const m = G.mesh(G.box(ROAD_W, 0.16, SEG), roadMat, 0, 0, -i * SEG);
-        ctx.add(m);
-        this.segments.push(m);
-      }
-
-      // décor défilant : arbres, clôtures, moulin
-      const rng = ctx.rng;
-      for (let i = 0; i < 26; i++) {
-        const side = rng.chance(0.5) ? -1 : 1;
-        const kind = rng.chance(0.25) ? 'pine' : 'round';
-        const t = MP.Props.tree({
-          kind, scale: rng.range(0.9, 1.6), seed: i,
-          leaf: kind === 'pine' ? 0x2a7a38 : 0x349436, trunk: 0x6a4a28,
-        });
-        t.position.set(side * rng.range(ROAD_W * 0.75, ROAD_W * 2.4), 0, -rng.range(0, NSEG * SEG));
-        ctx.add(t);
-        this.decor.push({ obj: t, side });
-      }
-      // piquets de clôture
-      const fenceMat = G.mat({ key: 'pw_fence', color: 0xb08a52 });
-      for (let i = 0; i < 40; i++) {
-        const side = i % 2 ? 1 : -1;
-        const p = G.mesh(G.box(0.12, 1.0, 0.12), fenceMat,
-          side * (ROAD_W * 0.62), 0.5, -(i / 2) * 4);
-        ctx.add(p);
-        this.decor.push({ obj: p, side });
-      }
-
-      // --- personnage et vélo ---------------------------------------------
-      ctx.spawnActors([[0, 0.62, 0, 0]], { scale: 1.05 });
-      this.actor = ctx.players[ctx.active[0]].actor;
-      this.actor.play('push');
-
-      this.bike = G.group(0, 0, 0);
-      const frameMat = G.mat({ key: 'pw_frame', color: 0xd02828 });
-      const tyreMat = G.mat({ key: 'pw_tyre', color: 0x1c1c22 });
-      const rimMat = G.mat({ key: 'pw_rim', color: 0xc8ccd4 });
-
-      this.wheels = [];
-      [[0, 0.34, 0.62], [0, 0.34, -0.62]].forEach((p) => {
-        const wg = G.group(p[0], p[1], p[2]);
-        const tyre = G.mesh(new THREE.TorusGeometry(0.34, 0.075, 6, 14), tyreMat, 0, 0, 0);
-        wg.add(tyre);
-        for (let k = 0; k < 4; k++) {
-          const sp = G.mesh(G.box(0.03, 0.62, 0.03), rimMat, 0, 0, 0);
-          sp.rotation.z = (k / 4) * Math.PI;
-          wg.add(sp);
-        }
-        this.bike.add(wg);
-        this.wheels.push(wg);
-      });
-      // cadre
-      this.bike.add(G.mesh(G.box(1.10, 0.07, 0.07), frameMat, 0, 0.52, 0));
-      this.bike.add(G.mesh(G.box(0.07, 0.42, 0.07), frameMat, 0, 0.50, 0.55));
-      this.bike.add(G.mesh(G.box(0.07, 0.34, 0.07), frameMat, 0, 0.46, -0.50));
-      // selle et guidon
-      this.bike.add(G.mesh(G.box(0.30, 0.09, 0.16), G.mat({ key: 'pw_seat', color: 0x2a2028 }), 0, 0.70, -0.42));
-      this.bike.add(G.mesh(G.box(0.52, 0.06, 0.06), G.mat({ key: 'pw_bar', color: 0x3a3a44 }), 0, 0.74, 0.62));
-      // pédalier
-      this.crank = G.group(0, 0.34, 0);
-      this.crank.add(G.mesh(G.cyl(0.13, 0.13, 0.05, 10), rimMat, 0, 0, 0).rotateZ(Math.PI / 2));
-      [-1, 1].forEach((s) => {
-        const arm = G.mesh(G.box(0.05, 0.26, 0.05), rimMat, s * 0.09, s * 0.11, 0);
-        this.crank.add(arm);
-      });
-      this.bike.add(this.crank);
-      ctx.add(this.bike);
-
-      ctx.setCamera(0, 2.4, 5.4, 0, 1.0, -1.5);
-    }
-
-    start() {
-      this.ctx.banner('BASCULEZ LE STICK GAUCHE-DROITE !', 2.0, { color: '#ffe040', size: 34 });
-      this.wind = this.ctx.loop({ type: 'noise', freq: 500, q: 1.2, filterType: 'lowpass' });
-    }
-
-    /* --------------------------------------------------------------- jeu */
-
-    update(dt) {
-      const ctx = this.ctx;
-      const i = ctx.active[0];
-      const pad = ctx.pad(i);
-
-      // --- pédalage : on compte les bascules complètes du stick -----------
-      const x = pad.rawX;
-      const side = x > 0.5 ? 1 : x < -0.5 ? -1 : 0;
-      if (side !== 0 && side !== this.lastSide) {
-        if (this.lastSide !== 0) {
-          // une bascule complète : impulsion
-          this.speed += 3.4;
-          MP.Audio.play('click');
-          this.pedalKick = 0.12;
-        }
-        this.lastSide = side;
-      }
-
-      // --- physique -------------------------------------------------------
-      const grad = this._gradAt(this.dist);
-      // la pente freine en montée, accélère en descente
-      this.speed -= grad * 9 * dt;
-      this.speed -= this.speed * 0.55 * dt;         // frottements
-      this.speed = U.clamp(this.speed, 0, 26);
-      this.dist += this.speed * dt;
-      ctx.setScore(i, Math.floor(this.dist));
-      ctx.soloCoins = Math.min(20, Math.floor(this.dist / 12));
-
-      // --- route et décor défilants ---------------------------------------
-      const baseY = this._slopeAt(this.dist);
-      this.segments.forEach((m, k) => {
-        // position du tronçon dans le repère défilant
-        let z = -((k * SEG) - (this.dist % (NSEG * SEG)));
-        if (z > SEG) z -= NSEG * SEG;
-        m.position.z = z;
-        m.position.y = this._slopeAt(this.dist - z) - baseY;
-        m.rotation.x = -Math.atan2(this._gradAt(this.dist - z), 1) * 0.5;
-      });
-      this.decor.forEach((d) => {
-        d.obj.position.z += this.speed * dt;
-        if (d.obj.position.z > 12) {
-          d.obj.position.z -= NSEG * SEG;
-          d.obj.position.x = d.side * U.rand.range(ROAD_W * 0.62, ROAD_W * 2.4);
-        }
-        d.obj.position.y = this._slopeAt(this.dist - d.obj.position.z) - baseY;
-      });
-
-      // --- animation du vélo ----------------------------------------------
-      this.pedal += this.speed * dt * 1.6;
-      this.wheels.forEach((w) => { w.rotation.x = -this.pedal; });
-      this.crank.rotation.x = -this.pedal * 0.5;
-      const tilt = -Math.atan2(grad, 1) * 0.55;
-      this.bike.rotation.x = tilt;
-      this.actor.root.rotation.x = tilt;
-      this.actor.root.position.set(0, 0.62 + Math.sin(this.pedal * 0.5) * 0.03, -0.12);
-      this.actor.animSpeed = 0.6 + this.speed * 0.13;
-      // les jambes suivent le pédalier
-      this.actor.rig.legL.rotation.x = Math.sin(this.pedal * 0.5) * 0.7 - 0.5;
-      this.actor.rig.legR.rotation.x = -Math.sin(this.pedal * 0.5) * 0.7 - 0.5;
-      this.actor.update(dt);
-
-      if (this.wind) this.wind.set(0.02 + this.speed * 0.008, 300 + this.speed * 60);
-
-      // caméra qui recule légèrement à haute vitesse
-      const back = 5.2 + this.speed * 0.10;
-      ctx.camera.position.set(0, 2.3 + this.speed * 0.02, back);
-      ctx.camera.lookAt(0, 1.0, -2.0);
-    }
-
-    /* ------------------------------------------------------------------ IA */
-
-    ai(dt) {
-      const ctx = this.ctx;
-      const i = ctx.active[0];
-      if (!ctx.players[i].isCPU) return;
-      const pad = ctx.vpad(i);
-      const sk = ctx.skill(i);
-      const d = ctx.players[i].data;
-      if (d.t === undefined) { d.t = 0; d.side = 1; }
-      d.t -= dt;
-      // cadence : de ~4 bascules/s (facile) à ~8/s (difficile)
-      const period = U.lerp(0.25, 0.12, (sk - 0.62) / 0.5);
-      if (d.t <= 0) { d.t = period * U.rand.range(0.85, 1.15); d.side = -d.side; }
-      pad.set(d.side, 0);
-    }
-
-    /* ----------------------------------------------------------------- HUD */
-
-    drawHud(g) {
-      const W = MP.Engine.W;
-      MP.UI.text(g, Math.floor(this.dist) + ' m', W / 2, 84, {
-        size: 34, color: '#ffffff', width: 6,
-      });
-      // compteur de vitesse
-      MP.UI.bar(g, W / 2 - 90, 112, 180, 16, this.speed / 26, { fill: '#40d060' });
-      MP.UI.text(g, (this.speed * 3.6).toFixed(0) + ' km/h', W / 2, 138,
-        { size: 15, color: '#c8e8ff', width: 2.5 });
-      // indicateur de pente
-      const grad = this._gradAt(this.dist);
-      if (Math.abs(grad) > 0.05) {
-        MP.UI.text(g, grad > 0 ? 'CÔTE !' : 'DESCENTE !', W / 2, 168, {
-          size: 20, color: grad > 0 ? '#ff8080' : '#80ffa0', width: 3.5,
-        });
-      }
-    }
-
-    onEnd() { if (this.wind) this.wind.stop(); }
-    dispose() { if (this.wind) this.wind.stop(); }
-  }
-
-  MP.Minigames.register({
-    id: 'pedal_power',
-    name: 'Coup de Pédale',
-    nameEn: 'Pedal Power',
-    type: 'solo',
-    duration: 30,
-    desc: 'Basculez le stick de gauche à droite pour pédaler. Attention aux côtes, '
-      + 'qui vous freinent brutalement — et profitez des descentes !',
-    controls: [['STICK', 'Basculer gauche-droite']],
-    scoreLabel: 'm',
-    formatScore: (n) => n.toFixed(0) + ' m',
-    record: 'high',
-    music: 'mg_solo',
-    create: (ctx) => new PedalPower(ctx),
   });
 })(window.MP = window.MP || {});
 
@@ -41604,12 +41667,12 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
 })(window.MP = window.MP || {});
 
 </script>
-<script data-file="src/minigames/bonus/boo_away.js">
+<script data-file="src/minigames/bonus/fantome_piece.js">
 /* =========================================================================
-   MINI-JEU BONUS — « Boo ou Pièce » (Boo Away)
+   MINI-JEU BONUS — « Fantôme ou Pièce »
    -------------------------------------------------------------------------
    1 joueur · jeu de hasard · pièces. Jardin nocturne devant un manoir : à
-   gauche un Boo ricaneur qui tente de voler 10 pièces (1 chance sur 4
+   gauche un Fantôme ricaneur qui tente de voler 10 pièces (1 chance sur 4
    d'échouer) — et, une fois sur 300, revient avec une ÉTOILE entière ; à
    droite une grosse pièce qui tourne et en offre 10 à coup sûr. Un panneau
    explicatif affiche les chances avant le choix, pour que le risque soit
@@ -41622,13 +41685,13 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
   const G = MP.Gfx;
   const T = MP.Tex;
 
-  const POST_X = [-2.6, 2.6];    // 0 = Boo, 1 = Pièce
+  const POST_X = [-2.6, 2.6];    // 0 = Fantôme, 1 = Pièce
   const POST_Z = -4.2;
   const CHOOSE_Z = 1.6;
   const GHOST_SUCCESS_P = 0.75;  // 3 chances sur 4
-  const GHOST_STAR_P = 1 / 300;  // le gros lot : le Boo repart avec une étoile
+  const GHOST_STAR_P = 1 / 300;  // le gros lot : le Fantôme repart avec une étoile
 
-  class BooAway {
+  class FantomePiece {
     constructor(ctx) {
       this.ctx = ctx;
       this.walker = null;
@@ -41637,7 +41700,7 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
       this.state = 'choose';     // choose -> walkin -> reveal
       this.stateT = 0;
       this.chosen = -1;
-      this.success = false;      // résultat du Boo (ignoré pour la pièce)
+      this.success = false;      // résultat du Fantôme (ignoré pour la pièce)
       this.stolenStar = false;   // le coup de chance sur 300
       this.revealed = false;
       this.resolved = false;
@@ -41655,16 +41718,16 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
         ambient: 0x241640, ambientIntensity: 0.7,
       });
 
-      ctx.floor(24, 20, T.grass('#182c16', '#223a1e', 'boo_grass'), { tile: 10 });
+      ctx.floor(24, 20, T.grass('#182c16', '#223a1e', 'fantome_grass'), { tile: 10 });
 
       // lune et son halo
-      ctx.add(G.mesh(G.sphere(1.4, 14, 12), G.flat({ key: 'boo_moon', color: 0xf2eecb }), 6.5, 9, -17));
+      ctx.add(G.mesh(G.sphere(1.4, 14, 12), G.flat({ key: 'fantome_moon', color: 0xf2eecb }), 6.5, 9, -17));
       const halo = G.billboard(G.particleTexture('soft'), 7, 7, { color: 0xfff2c0, blending: THREE.AdditiveBlending, opacity: 0.4, depthTest: false });
       halo.position.set(6.5, 9, -16.9);
       ctx.add(halo);
 
       // silhouette du manoir hanté (texture découpée, alpha binaire)
-      const manorTex = T.make('boo_manor', 128, (g, w, h) => {
+      const manorTex = T.make('fantome_manor', 128, (g, w, h) => {
         g.clearRect(0, 0, w, h);
         g.fillStyle = '#120a1c';
         g.fillRect(w * 0.10, h * 0.30, w * 0.52, h * 0.70);
@@ -41675,11 +41738,11 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
         [[0.20, 0.48], [0.40, 0.48], [0.20, 0.72], [0.40, 0.72], [0.71, 0.36], [0.71, 0.60]]
           .forEach((p) => g.fillRect(w * p[0], h * p[1], w * 0.05, h * 0.08));
       }, { height: 64, quantize: false, wrap: THREE.ClampToEdgeWrapping });
-      const manorMat = G.flat({ key: 'boo_manorm', map: manorTex, transparent: true, alphaTest: 0.4 });
+      const manorMat = G.flat({ key: 'fantome_manorm', map: manorTex, transparent: true, alphaTest: 0.4 });
       ctx.add(G.mesh(G.plane(15, 7.5), manorMat, 0, 3.7, -13.5));
 
       // arbres morts, tordus, à contre-jour de la lune
-      const trunkMat = G.mat({ key: 'boo_trunk', color: 0x241a16 });
+      const trunkMat = G.mat({ key: 'fantome_trunk', color: 0x241a16 });
       [[-7.2, -6.5], [7.6, -7], [-8.4, -2.5]].forEach((p, k) => {
         const trunk = G.mesh(G.cyl(0.14, 0.24, 3.2, 6), trunkMat, p[0], 1.6, p[1]);
         trunk.rotation.z = (k - 1) * 0.09;
@@ -41692,16 +41755,16 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
       });
 
       // lanternes flanquant le passage
-      const lampMat = G.mat({ key: 'boo_lamp', color: 0xa0e070, emissive: 0x60a020, emissiveIntensity: 1.4 });
+      const lampMat = G.mat({ key: 'fantome_lamp', color: 0xa0e070, emissive: 0x60a020, emissiveIntensity: 1.4 });
       [-4.4, 4.4].forEach((x) => {
-        ctx.add(G.mesh(G.cyl(0.06, 0.08, 2.2, 6), G.mat({ key: 'boo_post', color: 0x30281c }), x, 1.1, 0));
+        ctx.add(G.mesh(G.cyl(0.06, 0.08, 2.2, 6), G.mat({ key: 'fantome_post', color: 0x30281c }), x, 1.1, 0));
         const lamp = G.mesh(G.sphere(0.16), lampMat, x, 2.25, 0);
         ctx.add(lamp);
         this.lanterns.push(lamp);
       });
 
       // les deux socles + indicateurs de sélection au sol
-      const baseMat = G.mat({ key: 'boo_base', color: 0x453a58 });
+      const baseMat = G.mat({ key: 'fantome_base', color: 0x453a58 });
       POST_X.forEach((x) => ctx.add(G.mesh(G.cyl(0.7, 0.85, 0.4, 16), baseMat, x, 0.2, POST_Z)));
       this._buildGhost();
       this._buildCoin();
@@ -41719,14 +41782,14 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
     }
 
     /**
-     * Boo : corps blanc franc, halo doux et large sourire. Un fantôme trop
+     * Fantôme : corps blanc franc, halo doux et large sourire. Un fantôme trop
      * translucide se noyait dans le bleu nuit du jardin — ici il est presque
      * opaque et légèrement lumineux, donc lisible de loin.
      */
     _buildGhost() {
       const ctx = this.ctx;
       const mat = G.mat({
-        key: 'boo_body', color: 0xffffff, emissive: 0xf6f2ff, emissiveIntensity: 0.85,
+        key: 'fantome_body', color: 0xffffff, emissive: 0xf6f2ff, emissiveIntensity: 0.85,
         transparent: true, opacity: 0.97, fog: false,
       });
       const grp = G.group(POST_X[0], 1.55, POST_Z);
@@ -41740,7 +41803,7 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
 
       grp.add(G.mesh(G.sphere(0.5, 12, 10), mat, 0, 0.1, 0));
       grp.add(G.mesh(G.cone(0.5, 0.55, 12), mat, 0, -0.35, 0));
-      const eyeMat = G.mat({ key: 'boo_eye', color: 0x140818 });
+      const eyeMat = G.mat({ key: 'fantome_eye', color: 0x140818 });
       grp.add(G.mesh(G.sphere(0.07), eyeMat, -0.16, 0.14, 0.42));
       grp.add(G.mesh(G.sphere(0.07), eyeMat, 0.16, 0.14, 0.42));
 
@@ -41758,7 +41821,7 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
       // plein jour, virait au brun sous cette lune. Une clé à part évite de
       // toucher au matériau partagé du plateau.
       this.stolen.userData.star.material = G.mat({
-        key: 'boo_stolenstar', color: 0xffd21a, emissive: 0xffc400, emissiveIntensity: 0.95,
+        key: 'fantome_stolenstar', color: 0xffd21a, emissive: 0xffc400, emissiveIntensity: 0.95,
       });
       this.stolen.position.set(0, 1.0, 0.2);
       this.stolen.visible = false;
@@ -41772,7 +41835,7 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
     /** Grosse pièce dorée posée sur son socle, qui tourne sur elle-même. */
     _buildCoin() {
       const ctx = this.ctx;
-      const faceTex = T.sprite('boo_coinface', 64, (g, w, h) => {
+      const faceTex = T.sprite('fantome_coinface', 64, (g, w, h) => {
         const grd = g.createLinearGradient(0, 0, w, h);
         grd.addColorStop(0, '#ffe98a');
         grd.addColorStop(0.5, '#f5c518');
@@ -41795,13 +41858,13 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
 
       this.coinGeo = new THREE.CylinderGeometry(0.66, 0.66, 0.17, 20);
       const rim = G.mesh(this.coinGeo, G.mat({
-        key: 'boo_coinrim', color: 0xffd23a, emissive: 0x8a5c00, emissiveIntensity: 1,
+        key: 'fantome_coinrim', color: 0xffd23a, emissive: 0x8a5c00, emissiveIntensity: 1,
       }));
       rim.rotation.x = Math.PI / 2;   // tranche debout : la pièce tourne sur Y
       grp.add(rim);
       // faces non éclairées : sous la lune, un Lambert doré ne rendait qu'un
       // disque brun où l'étoile gravée disparaissait.
-      const faceMat = G.flat({ key: 'boo_coinfacem', map: faceTex, fog: false });
+      const faceMat = G.flat({ key: 'fantome_coinfacem', map: faceTex, fog: false });
       [1, -1].forEach((s) => {
         const f = G.mesh(G.circle(0.62, 20), faceMat, 0, 0, s * 0.089);
         if (s < 0) f.rotation.y = Math.PI;
@@ -41812,7 +41875,7 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
       this.coinHome = { x: POST_X[1], y: 1.55, z: POST_Z };
     }
 
-    start() { this.ctx.banner('BOO OU PIÈCE ?', 1.8, { color: '#c890ff' }); }
+    start() { this.ctx.banner('FANTÔME OU PIÈCE ?', 1.8, { color: '#c890ff' }); }
 
     /* --------------------------------------------------------------- boucle */
 
@@ -41888,12 +41951,12 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
 
     /* --------------------------------------------------------- révélation */
 
-    /** Le Boo s'envole ricaner vers un adversaire imaginaire, puis revient. */
+    /** Le Fantôme s'envole ricaner vers un adversaire imaginaire, puis revient. */
     _updateGhostReveal(dt) {
       const ctx = this.ctx, g = this.ghost, t = this.stateT, home = this.ghostHome;
       const farX = home.x - 5.5, farY = home.y + 2.4, farZ = home.z - 5;
 
-      if (t < 0.02) MP.Audio.play('boo');
+      if (t < 0.02) MP.Audio.play('fantome');
       if (t > 0.32 && t < 0.36) MP.Audio.play('laugh');
 
       if (t < 1.0) {
@@ -41926,7 +41989,7 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
           p.actor.play('cheer');
           p.actor.flash(0.6);
           MP.Audio.play('star');
-          // pas de texte flottant ici : il masquerait l'étoile que le Boo
+          // pas de texte flottant ici : il masquerait l'étoile que le Fantôme
           // rapporte, et la bannière du HUD annonce déjà le coup de chance
           ctx.sparks(home.x, home.y + 0.6, home.z, 24, 0xffd23a);
         } else if (this.success) {
@@ -42040,7 +42103,7 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
       if (this.state === 'choose') {
         const info = [
           {
-            x: W / 2 - 340, ring: '#c890ff', on: this.nearest === 0, title: 'BOO',
+            x: W / 2 - 340, ring: '#c890ff', on: this.nearest === 0, title: 'FANTÔME',
             fill: '#2a1c48', fill2: '#140a28', color: '#e8d0ff',
             txt: '3 sur 4 : +10 pièces volées, sinon rien. 1 sur 300 : une ÉTOILE !',
           },
@@ -42069,7 +42132,7 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
         } else if (this.chosen === 0 && this.success) {
           MP.UI.text(g, 'VOL RÉUSSI !', 0, 0, { size: 34, color: '#e8d0ff', outline: '#402060', width: 6 });
         } else if (this.chosen === 0) {
-          MP.UI.text(g, 'LE BOO A ÉCHOUÉ...', 0, 0, { size: 30, color: '#c8c0d8', outline: '#302040', width: 6 });
+          MP.UI.text(g, 'LE FANTÔME A ÉCHOUÉ...', 0, 0, { size: 30, color: '#c8c0d8', outline: '#302040', width: 6 });
         } else {
           MP.UI.coin(g, 0, -10, 40, MP.Engine.time * 0.5);
           MP.UI.text(g, '+10 PIÈCES !', 0, 56, { size: 30, color: '#fff29a', outline: '#7a4a00', width: 6 });
@@ -42090,28 +42153,28 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
   /* --------------------------------------------------------- déclaration */
 
   MP.Minigames.register({
-    id: 'boo_away',
-    name: 'Boo ou Pièce',
-    nameEn: 'Boo or Coin',
+    id: 'fantome_piece',
+    name: 'Fantôme ou Pièce',
+    nameEn: 'Ghost or Coin',
     type: 'bonus',
     duration: 0,
-    desc: 'Un Boo espiègle ou une grosse pièce dorée : choisissez votre socle et appuyez sur A. ' +
-      'Le Boo tente de voler 10 pièces (risque d\'échouer) et, une fois sur 300, revient avec une ÉTOILE. ' +
+    desc: 'Un Fantôme espiègle ou une grosse pièce dorée : choisissez votre socle et appuyez sur A. ' +
+      'Le Fantôme tente de voler 10 pièces (risque d\'échouer) et, une fois sur 300, revient avec une ÉTOILE. ' +
       'La pièce, elle, en offre 10 à coup sûr.',
     controls: [['STICK', 'Se déplacer'], ['A', 'Choisir']],
     scoreLabel: 'pièces',
     record: null,
-    create: (ctx) => new BooAway(ctx),
+    create: (ctx) => new FantomePiece(ctx),
   });
 })(window.MP = window.MP || {});
 
 </script>
-<script data-file="src/minigames/bonus/koopa_time.js">
+<script data-file="src/minigames/bonus/dragon_time.js">
 /* =========================================================================
-   MINI-JEU BONUS — « L'Heure du Roi Koopa » (Koopa Time)
+   MINI-JEU BONUS — « L'Heure du Roi Dragon » (Dragon Time)
    -------------------------------------------------------------------------
    1 joueur · jeu de hasard · pièces (score pouvant être négatif)
-   Une salle de lave dominée par la silhouette menaçante du roi Koopa, qui
+   Une salle de lave dominée par la silhouette menaçante du roi Dragon, qui
    ricane et frappe le sol de temps en temps. Quatre tuyaux verts sortent
    de la roche : trois libèrent des pièces, un seul est piégé et souffle
    le joueur en arrière dans un geyser de flammes. Et dans 1 % des manches,
@@ -42136,7 +42199,7 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
      sur 400 environ. */
   const STAR_ODDS = 3 / 300;
 
-  class KoopaTime {
+  class DragonTime {
     constructor(ctx) {
       this.ctx = ctx;
       this.walker = null;
@@ -42185,7 +42248,7 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
         ctx.add(cap);
       });
 
-      this._buildKoopa();
+      this._buildDragon();
 
       // quatre tuyaux
       PIPE_X.forEach((x, i) => this._buildPipe(x, i));
@@ -42215,13 +42278,13 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
       this.camBase = { px: 0, py: 5.2, pz: 11, lx: 0, ly: 2.8, lz: -4.6 };
     }
 
-    /** Silhouette menaçante du roi Koopa, en primitives, dominant le fond. */
-    _buildKoopa() {
+    /** Silhouette menaçante du roi Dragon, en primitives, dominant le fond. */
+    _buildDragon() {
       const ctx = this.ctx;
       const grp = G.group(0, 0, -11);
       grp.scale.setScalar(1.5);
-      this.koopa = grp;
-      this.koopaBaseY = 0;
+      this.dragon = grp;
+      this.dragonBaseY = 0;
 
       const skin = G.mat({ key: 'bt_skin', color: 0x2f6a1e, emissive: 0x401000, emissiveIntensity: 0.25 });
       const shell = G.mat({ key: 'bt_shell', color: 0x7a2412, emissive: 0x300800, emissiveIntensity: 0.2 });
@@ -42277,8 +42340,8 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
     /* ------------------------------------------------------------ démarrage */
 
     start() {
-      this.ctx.banner('L\'HEURE DU ROI KOOPA !', 1.9, { color: '#ff8030' });
-      MP.Audio.play('koopa');
+      this.ctx.banner('L\'HEURE DU ROI DRAGON !', 1.9, { color: '#ff8030' });
+      MP.Audio.play('dragon');
     }
 
     /* --------------------------------------------------------------- boucle */
@@ -42287,8 +42350,8 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
       const ctx = this.ctx;
       if (!this.resolved && ctx.time > 60) { this._emergencyFinish(); return; }
 
-      // Le roi Koopa vit sa vie en fond : léger flottement + yeux qui pulsent
-      this.koopa.position.y = this.koopaBaseY + Math.sin(ctx.time * 1.3) * 0.06;
+      // Le roi Dragon vit sa vie en fond : léger flottement + yeux qui pulsent
+      this.dragon.position.y = this.dragonBaseY + Math.sin(ctx.time * 1.3) * 0.06;
       this.eyeGlow.forEach((e, k) => {
         e.material.emissiveIntensity = 1.3 + Math.sin(ctx.time * 5 + k) * 0.4;
       });
@@ -42297,14 +42360,14 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
       if (this.stompSquishT > 0) {
         this.stompSquishT = Math.max(0, this.stompSquishT - dt);
         const k = this.stompSquishT / 0.16;
-        this.koopa.scale.set(1.5 + k * 0.08, 1.5 - k * 0.20, 1.5 + k * 0.08);
+        this.dragon.scale.set(1.5 + k * 0.08, 1.5 - k * 0.20, 1.5 + k * 0.08);
       } else {
-        this.koopa.scale.set(1.5, 1.5, 1.5);
+        this.dragon.scale.set(1.5, 1.5, 1.5);
       }
 
       if (this.state !== 'reveal') {
         this.stompT -= dt;
-        if (this.stompT <= 0) { this.stompT = U.rand.range(3.5, 6.2); this._koopaStomp(); }
+        if (this.stompT <= 0) { this.stompT = U.rand.range(3.5, 6.2); this._dragonStomp(); }
       }
 
       if (this.state === 'choose') this._updateChoose(dt);
@@ -42312,9 +42375,9 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
       else this._updateReveal(dt);
     }
 
-    /** Le roi Koopa ricane et frappe le sol : secousse de caméra bien sentie. */
-    _koopaStomp() {
-      MP.Audio.play('koopa');
+    /** Le roi Dragon ricane et frappe le sol : secousse de caméra bien sentie. */
+    _dragonStomp() {
+      MP.Audio.play('dragon');
       this.ctx.shake(0.16, 0.3);
       this.stompSquishT = 0.16;
       this.ctx.dust(0, 0.05, -8.5, 10);
@@ -42378,7 +42441,7 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
         const i0 = ctx.active[0];
         const pl = ctx.players[i0];
         if (this.result.type === 'trap') {
-          MP.Audio.play('koopa');
+          MP.Audio.play('dragon');
           MP.Audio.play('explode');
           ctx.shake(0.22, 0.45);
           ctx.impact(p.x, 2.3, PIPE_Z, 2.2);
@@ -42480,7 +42543,7 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
         g.translate(W / 2, H * 0.22);
         g.scale(sc, sc);
         if (this.result.type === 'trap') {
-          MP.UI.text(g, 'PIÈGE DU ROI KOOPA !', 0, -6, { size: 34, color: '#ff9060', outline: '#5a0a00', width: 6 });
+          MP.UI.text(g, 'PIÈGE DU ROI DRAGON !', 0, -6, { size: 34, color: '#ff9060', outline: '#5a0a00', width: 6 });
           MP.UI.text(g, '-20 PIÈCES', 0, 42, { size: 28, color: '#ff5040', outline: '#5a0a00', width: 6 });
         } else if (this.result.type === 'star') {
           MP.UI.star(g, 0, -10, 44, { rot: MP.Engine.time * 1.4 });
@@ -42500,20 +42563,20 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
   /* --------------------------------------------------------- déclaration */
 
   MP.Minigames.register({
-    id: 'koopa_time',
-    name: 'L\'Heure du Roi Koopa',
-    nameEn: 'Koopa Time',
+    id: 'dragon_time',
+    name: 'L\'Heure du Roi Dragon',
+    nameEn: 'Dragon Time',
     type: 'bonus',
     duration: 0,
     allowNegative: true,
-    music: 'koopa_event',
-    desc: 'Quatre tuyaux crachent la fortune du roi Koopa... ou sa colère ! Choisissez-en un et ' +
+    music: 'dragon_event',
+    desc: 'Quatre tuyaux crachent la fortune du roi Dragon... ou sa colère ! Choisissez-en un et ' +
       'appuyez sur A. Trois cachent des pièces, un seul vous soufflera en arrière. Et très ' +
       'rarement, le plus généreux crache une véritable étoile !',
     controls: [['STICK', 'Se déplacer'], ['A', 'Choisir le tuyau']],
     scoreLabel: 'pièces',
     record: null,
-    create: (ctx) => new KoopaTime(ctx),
+    create: (ctx) => new DragonTime(ctx),
   });
 })(window.MP = window.MP || {});
 
@@ -42570,17 +42633,17 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
       desc: 'Temps du Hasard : deux joueurs tirés au sort s\'échangent des pièces ou une étoile.' },
     mushroom: { label: 'Case Champignon', color: '#f0f0e0',
       desc: 'Un champignon pour le sac : Double (deux blocs de dé) ou Inversé (on recule).' },
-    koopa: { label: 'Case Koopa', color: '#c83020',
-      desc: 'Le roi Koopa s\'en mêle : rançon, mini-jeu forcé… rarement une bonne nouvelle.' },
+    dragon: { label: 'Case Dragon', color: '#c83020',
+      desc: 'Le roi Dragon s\'en mêle : rançon, mini-jeu forcé… rarement une bonne nouvelle.' },
     star: { label: 'Case Étoile', color: '#f8d030',
       desc: () => 'Le guide y vend une étoile ' + MP.State.starPrice + ' pièces. L\'étoile change de case après chaque achat.' },
     shop: { label: 'Case Magasin', color: '#f0a030',
       desc: 'Un objet à acheter. Le marchand hèle même ceux qui ne font que passer devant.' },
     bonus: { label: 'Case Surprise', color: '#e070c8',
       desc: 'Une roue de lots défile : des pièces, un objet… ou un malus.' },
-    boo: { label: 'Case Boo', color: '#a898ec',
-      desc: () => 'Boo vole pour vous : ' + Sp.BOO_COINS + ' pièces gratuitement, ou une étoile contre '
-        + Sp.BOO_STAR_PRICE + ' pièces.' },
+    fantome: { label: 'Case Fantôme', color: '#a898ec',
+      desc: () => 'Le Fantôme vole pour vous : ' + Sp.FANTOME_COINS + ' pièces gratuitement, ou une étoile contre '
+        + Sp.FANTOME_STAR_PRICE + ' pièces.' },
     start: { label: 'Départ', color: '#f8f0d0',
       desc: 'Chaque passage rapporte 10 pièces.' },
   };
@@ -42644,15 +42707,15 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
       await bs.bonusWheel(p);
     },
 
-    /* -------------------------------------------------------------- Boo */
-    async boo(bs, p) {
-      await bs.flashSpaceLabel('BOO !', '#c8b8ff');
-      await bs.booEvent(p);
+    /* -------------------------------------------------------------- Fantôme */
+    async fantome(bs, p) {
+      await bs.flashSpaceLabel('FANTÔME !', '#c8b8ff');
+      await bs.fantomeEvent(p);
     },
 
-    /* ------------------------------------------------------- roi Koopa */
-    async koopa(bs, p) {
-      await bs.koopaEvent(p);
+    /* ------------------------------------------------------- roi Dragon */
+    async dragon(bs, p) {
+      await bs.dragonEvent(p);
     },
 
     /* ------------------------------------------------------------ étoile */
@@ -42759,9 +42822,9 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
   };
 
   /* =====================================================================
-     Case Boo : le marché du fantôme
+     Case Fantôme : le marché du fantôme
      ---------------------------------------------------------------------
-     Boo ne choisit rien : c'est le joueur qui dit QUOI voler, puis À QUI.
+     Fantôme ne choisit rien : c'est le joueur qui dit QUOI voler, puis À QUI.
      Deux marchés seulement — dix pièces, offertes par la maison ; une
      étoile, cinquante pièces d'avance, sans négociation possible. Le
      second est ce qui empêche la case d'être un cadeau : à ce prix-là,
@@ -42769,38 +42832,38 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
      et vide une bourse pour longtemps.
      ===================================================================== */
 
-  Sp.BOO_COINS = 10;
-  Sp.BOO_STAR_PRICE = 50;
+  Sp.FANTOME_COINS = 10;
+  Sp.FANTOME_STAR_PRICE = 50;
 
-  Sp.booDeals = [
+  Sp.fantomeDeals = [
     {
-      id: 'coins', label: Sp.BOO_COINS + ' PIÈCES', price: 0, color: '#ffd24a',
-      desc: 'Boo dérobe ' + Sp.BOO_COINS + ' pièces au joueur de votre choix.',
+      id: 'coins', label: Sp.FANTOME_COINS + ' PIÈCES', price: 0, color: '#ffd24a',
+      desc: 'Le Fantôme dérobe ' + Sp.FANTOME_COINS + ' pièces au joueur de votre choix.',
     },
     {
-      id: 'star', label: '1 ÉTOILE', price: Sp.BOO_STAR_PRICE, color: '#ffe680',
-      desc: 'Boo dérobe une étoile au joueur de votre choix. '
-        + Sp.BOO_STAR_PRICE + ' pièces, à payer d\'avance.',
+      id: 'star', label: '1 ÉTOILE', price: Sp.FANTOME_STAR_PRICE, color: '#ffe680',
+      desc: 'Le Fantôme dérobe une étoile au joueur de votre choix. '
+        + Sp.FANTOME_STAR_PRICE + ' pièces, à payer d\'avance.',
     },
   ];
 
   /** Un marché est-il jouable ? (la bourse suit, et il y a de quoi voler) */
-  Sp.booDealOk = function (deal, p, others) {
+  Sp.fantomeDealOk = function (deal, p, others) {
     if (deal.price > p.coins) return false;
     if (deal.id === 'star') return others.some((q) => q.stars > 0);
     return true;
   };
 
   /** Ce joueur a-t-il de quoi payer ce marché-là ? */
-  Sp.booTargetOk = function (deal, q) {
+  Sp.fantomeTargetOk = function (deal, q) {
     return deal.id === 'star' ? q.stars > 0 : true;
   };
 
   /* =====================================================================
-     Événements du roi Koopa
+     Événements du roi Dragon
      ===================================================================== */
 
-  Sp.koopaEvents = [
+  Sp.dragonEvents = [
     {
       id: 'coins', weight: 4,
       title: 'DONNE-MOI TES PIÈCES !',
@@ -42823,7 +42886,7 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
     },
     {
       id: 'revolution', weight: 2,
-      title: 'RÉVOLUTION KOOPA !',
+      title: 'RÉVOLUTION DU DRAGON !',
       line: 'Tout le monde met ses pièces en commun. Partage équitable !',
       apply(bs, p) {
         const players = MP.State.players;
@@ -42836,7 +42899,7 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
     },
     {
       id: 'gift', weight: 1,
-      title: 'CADEAU DU ROI KOOPA ?!',
+      title: 'CADEAU DU ROI DRAGON ?!',
       line: 'Aujourd\'hui je suis de bonne humeur. Prends ces pièces... et tais-toi !',
       apply(bs, p) {
         p.addCoins(20);
@@ -42845,15 +42908,15 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
     },
     {
       id: 'minigame', weight: 2,
-      title: 'MINI-JEU DU ROI KOOPA !',
+      title: 'MINI-JEU DU ROI DRAGON !',
       line: 'Amuse-moi un peu ! Si tu échoues, tu paieras.',
       minigame: true,
       apply() { return { minigame: true }; },
     },
   ];
 
-  Sp.pickKoopaEvent = function (rng) {
-    const list = Sp.koopaEvents;
+  Sp.pickDragonEvent = function (rng) {
+    const list = Sp.dragonEvents;
     const total = list.reduce((s, a) => s + a.weight, 0);
     let r = (rng ? rng() : Math.random()) * total;
     for (let i = 0; i < list.length; i++) {
@@ -43093,7 +43156,7 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
     const haps = opts.happenings === undefined ? Math.round(indices.length * 0.14) : opts.happenings;
     const chances = opts.chances === undefined ? 2 : opts.chances;
     const mushrooms = opts.mushrooms === undefined ? 2 : opts.mushrooms;
-    const koopas = opts.koopas === undefined ? 2 : opts.koopas;
+    const dragons = opts.dragons === undefined ? 2 : opts.dragons;
     // Les échoppes (voir `SHOPS`) et trois cases Surprise sur chaque plateau :
     // posées ici plutôt que carte par carte, aucun tracé ne peut les oublier.
     const bonuses = opts.bonuses === undefined ? 3 : opts.bonuses;
@@ -43108,7 +43171,7 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
     take(haps, 'happening');
     take(chances, 'chance');
     take(mushrooms, 'mushroom');
-    take(koopas, 'koopa');
+    take(dragons, 'dragon');
     take(1, 'shop');
     take(bonuses, 'bonus');
     // La seconde échoppe ne se tire PAS au sort comme les autres cases : elle
@@ -43252,24 +43315,24 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
       root.add(hut);
     });
 
-    // --- fantômes des cases Boo -----------------------------------------
-    // Un petit Boo flotte AU-DESSUS de sa case, comme l'étoile au-dessus de
+    // --- fantômes des cases Fantôme -----------------------------------------
+    // Un petit Fantôme flotte AU-DESSUS de sa case, comme l'étoile au-dessus de
     // la sienne — et non à côté, comme l'échoppe : un décor ne doit jamais
     // venir masquer une case. Posé ici avec le tracé, il suit sa case sur
     // toutes les cartes, et l'aperçu du menu le montre aussi.
-    const booGhosts = [];
+    const fantomeGhosts = [];
     spaces.forEach((s) => {
-      if (s.type !== 'boo') return;
+      if (s.type !== 'fantome') return;
       const gh = P.ghost(0.85);
       // son ombre le suivrait en l'air, juste au-dessus du dessin de la case
       gh.userData.shadow.visible = false;
       gh.position.set(s.x, s.y + 1.75, s.z);
       root.add(gh);
-      booGhosts.push(gh);
+      fantomeGhosts.push(gh);
     });
     // La scène de jeu les fait flotter et pivoter (voir `_buildWorld`) ;
     // la maquette du menu les laisse immobiles.
-    root.userData.booGhosts = booGhosts;
+    root.userData.fantomeGhosts = fantomeGhosts;
 
     return meshes;
   };
@@ -43301,14 +43364,14 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
     // Départ
     b.setType(ring[0], 'start');
 
-    B.autoTypes(b, ring.concat(bridge), { seed: 7, chances: 2, mushrooms: 2, koopas: 2 });
+    B.autoTypes(b, ring.concat(bridge), { seed: 7, chances: 2, mushrooms: 2, dragons: 2 });
     b.setType(ring[0], 'start');
     // le pont est un passage risqué : plutôt du rouge
     b.setType(bridge[2], 'red');
     b.setType(bridge[4], 'happening');
     b.setType(bridge[6], 'red');
-    // et un Boo attend au bout du pont : le raccourci se paie d'un marché
-    b.setType(bridge[7], 'boo');
+    // et un Fantôme attend au bout du pont : le raccourci se paie d'un marché
+    b.setType(bridge[7], 'fantome');
 
     B.register({
       id: 'jungle',
@@ -43547,14 +43610,14 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
     // Départ
     b.setType(ring[0], 'start');
 
-    B.autoTypes(b, ring.concat(cut), { seed: 11, chances: 2, mushrooms: 2, koopas: 2 });
+    B.autoTypes(b, ring.concat(cut), { seed: 11, chances: 2, mushrooms: 2, dragons: 2 });
     b.setType(ring[0], 'start');
     // l'entaille est un raccourci gourmand : événements et hasard
     b.setType(cut[1], 'happening');
     b.setType(cut[3], 'chance');
     b.setType(cut[4], 'red');
-    // un Boo guette à l'entrée de l'entaille
-    b.setType(cut[0], 'boo');
+    // un Fantôme guette à l'entrée de l'entaille
+    b.setType(cut[0], 'fantome');
 
     B.register({
       id: 'gateau',
@@ -43824,14 +43887,14 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
         // fleur-champignon qui catapulte le joueur plus loin, ou un serveur
         // apporte une généreuse part de gâteau.
         if ((await bs.netRandom()) < 0.5) {
-          await bs.say('Une fleur géante surgit du glaçage sous tes pieds !', { speaker: 'Toad Pâtissier' });
+          await bs.say('Une fleur géante surgit du glaçage sous tes pieds !', { speaker: 'Chef Pâtissier' });
           MP.Audio.play('appear');
           await bs.flashSpaceLabel('PROPULSÉ !', '#ff90c0');
           const target = bs.board.spaces[(p.space + 6) % bs.board.spaces.length] ? (p.space + 6) % bs.board.spaces.length : p.space;
           await bs.warpTo(p, target);
-          await bs.say('Hop ! Tu voilà projeté un peu plus loin sur le gâteau.', { speaker: 'Toad Pâtissier' });
+          await bs.say('Hop ! Tu voilà projeté un peu plus loin sur le gâteau.', { speaker: 'Chef Pâtissier' });
         } else {
-          await bs.say('Un serveur t\'apporte une généreuse part de gâteau !', { speaker: 'Toad Pâtissier' });
+          await bs.say('Un serveur t\'apporte une généreuse part de gâteau !', { speaker: 'Chef Pâtissier' });
           await bs.awardCoins(p, 8, 'Part de gâteau !');
         }
       },
@@ -43892,13 +43955,13 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
     b.setType(ringA[0], 'start');
 
     B.autoTypes(b, ringA.concat(ringB).concat(bridgeN).concat(bridgeS),
-      { seed: 23, chances: 3, mushrooms: 2, koopas: 2 });
+      { seed: 23, chances: 3, mushrooms: 2, dragons: 2 });
     b.setType(ringA[0], 'start');
     // les ponts sont exposés aux embruns : un peu de hasard et de danger
     b.setType(bridgeN[1], 'chance');
     b.setType(bridgeS[1], 'red');
-    // et un Boo s'est installé au bout du pont sud
-    b.setType(bridgeS[2], 'boo');
+    // et un Fantôme s'est installé au bout du pont sud
+    b.setType(bridgeS[2], 'fantome');
 
     B.register({
       id: 'ile',
@@ -44190,7 +44253,7 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
     // Départ, au fond du canyon
     b.setType(ring[0], 'start');
 
-    B.autoTypes(b, ring.concat(spur), { seed: 31, chances: 2, mushrooms: 2, koopas: 3 });
+    B.autoTypes(b, ring.concat(spur), { seed: 31, chances: 2, mushrooms: 2, dragons: 3 });
     b.setType(ring[0], 'start');
     // les hauteurs sont plus risquées : rouge sur les mesas, hasard sur la
     // grande montée centrale
@@ -44198,8 +44261,8 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
     b.setType(ring[28], 'red');
     b.setType(spur[2], 'chance');
     b.setType(spur[5], 'happening');
-    // un Boo attend au pied de la descente de la grande mesa
-    b.setType(spur[6], 'boo');
+    // un Fantôme attend au pied de la descente de la grande mesa
+    b.setType(spur[6], 'fantome');
 
     B.register({
       id: 'canyon',
@@ -44413,7 +44476,7 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
         rockTex.repeat.set(20, 20);
         const rock = G.mesh(geo, G.mat({
           // facettes : une falaise lisse se lit comme une dune, pas comme
-          // de la roche — et le rendu N64 était de toute façon facetté
+          // de la roche — et le rendu rétro visé est de toute façon facetté
           key: 'canyon_rock', map: rockTex, vertexColors: true, flat: true,
         }));
         rock.rotation.x = -Math.PI / 2;
@@ -44691,14 +44754,14 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
     b.setType(ring[0], 'start');
 
     B.autoTypes(b, ring.concat(branchA, branchB), {
-      seed: 31, chances: 2, mushrooms: 2, koopas: 2,
+      seed: 31, chances: 2, mushrooms: 2, dragons: 2,
     });
     b.setType(ring[0], 'start');
     // le sommet de la passerelle est un point chaud : événement garanti
     b.setType(branchA[3], 'happening');
     b.setType(branchB[2], 'red');
-    // un Boo squatte le passage bas entre les cuves
-    b.setType(branchB[3], 'boo');
+    // un Fantôme squatte le passage bas entre les cuves
+    b.setType(branchB[3], 'fantome');
 
     B.register({
       id: 'machines',
@@ -45000,14 +45063,14 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
     b.setType(ring[0], 'start');
 
     B.autoTypes(b, ring.concat(branch), {
-      seed: 52, chances: 2, mushrooms: 2, koopas: 2,
+      seed: 52, chances: 2, mushrooms: 2, dragons: 2,
     });
     b.setType(ring[0], 'start');
     // le parvis du château, au sommet de l'arc-en-ciel, est toujours un événement
     b.setType(branch[6], 'happening');
     b.setType(branch[2], 'chance');
-    // un Boo hante la redescente de l'arc-en-ciel
-    b.setType(branch[10], 'boo');
+    // un Fantôme hante la redescente de l'arc-en-ciel
+    b.setType(branch[10], 'fantome');
 
     B.register({
       id: 'chateau',
@@ -45196,7 +45259,7 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
    Pepe Party — Plateau : Montagne de Magma
    -------------------------------------------------------------------------
    Un sentier grimpe en spirale le long du cône d'un volcan actif, jusqu'à
-   un lac de lave gardé par une statue du roi Koopa. Un raccourci traverse
+   un lac de lave gardé par une statue du roi Dragon. Un raccourci traverse
    une coulée de lave au pied de la montagne. Le plateau le plus difficile.
    ========================================================================= */
 (function (MP) {
@@ -45232,21 +45295,21 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
     b.setType(ring[0], 'start');
 
     B.autoTypes(b, ring.concat(branch), {
-      seed: 66, chances: 2, mushrooms: 2, koopas: 5,
+      seed: 66, chances: 2, mushrooms: 2, dragons: 5,
     });
     b.setType(ring[0], 'start');
     // la coulée de lave est un passage risqué
     b.setType(branch[1], 'red');
     b.setType(branch[3], 'happening');
     b.setType(branch[5], 'red');
-    // et un Boo veille au creux de la montagne, sur le raccourci
-    b.setType(branch[4], 'boo');
+    // et un Fantôme veille au creux de la montagne, sur le raccourci
+    b.setType(branch[4], 'fantome');
 
     B.register({
       id: 'magma',
       name: 'Montagne de Magma',
       nameEn: 'Magma Mountain',
-      desc: 'Un volcan grondant, un lac de lave à son sommet et le roi Koopa qui veille. Le plateau le plus redoutable.',
+      desc: 'Un volcan grondant, un lac de lave à son sommet et le roi Dragon qui veille. Le plateau le plus redoutable.',
       difficulty: 4,
       music: 'board_magma',
       spaces: b.result,
@@ -45382,7 +45445,7 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
 
         /* --------------------------------------------------- lac de lave */
         // Le lac tient tout entier dans le cratère : débordant, il engloutissait
-        // la boutique (ring[16]) et deux cases Koopa du sommet.
+        // la boutique (ring[16]) et deux cases Dragon du sommet.
         const LAVA = { cz: 8.4, r: 3.0 };
         const lavaTex = T.lava('magma_lava');
         lavaTex.repeat.set(6, 6);
@@ -45440,7 +45503,7 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
         /* ------------------------------------------------- statue du roi */
         // Le roi veille au bord sud du cratère, socle POSÉ sur son plancher :
         // il flottait au-dessus du vide, d'où le sol qu'on voyait sous lui.
-        const statue = P.koopaKing(2.5, true);
+        const statue = P.dragonKing(2.5, true);
         statue.position.set(0, VOLC.top + 0.7, 3.2);
         statue.rotation.y = Math.PI;
         root.add(statue);
@@ -45491,7 +45554,7 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
           MP.Engine.shake(0.5, 1.0);
           const target = p.space - 4 >= 0 ? p.space - 4 : 0;
           await bs.warpTo(p, target);
-          await bs.say('Le volcan te souffle en arrière !', { speaker: 'Roi Koopa', color: '#c02020' });
+          await bs.say('Le volcan te souffle en arrière !', { speaker: 'Roi Dragon', color: '#c02020' });
         } else {
           await bs.flashSpaceLabel('FILON DE RUBIS !', '#ff6060');
           await bs.say('Un filon de rubis brille dans la roche fondue !', { speaker: 'Roche' });
@@ -45562,14 +45625,14 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
     b.setType(ring[0], 'start');
 
     B.autoTypes(b, ring.concat(branch1, branch2), {
-      seed: 87, chances: 2, mushrooms: 2, koopas: 3,
+      seed: 87, chances: 2, mushrooms: 2, dragons: 3,
     });
     b.setType(ring[0], 'start');
     // les ponts de lumière sont des passages vertigineux
     b.setType(branch1[4], 'happening');
     b.setType(branch2[3], 'chance');
-    // un Boo flotte au milieu du second pont
-    b.setType(branch2[4], 'boo');
+    // un Fantôme flotte au milieu du second pont
+    b.setType(branch2[4], 'fantome');
 
     B.register({
       id: 'star',
@@ -45834,7 +45897,7 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
           case 'mushroom': score += 0.6 * weight; break;
           case 'shop': score += 0.5 * weight; break;
           case 'bonus': score += 0.7 * weight; break;
-          case 'koopa': score -= 2.4 * weight; break;
+          case 'dragon': score -= 2.4 * weight; break;
           case 'star': score += 1.2 * weight; break;
           default: break;
         }
@@ -45942,7 +46005,7 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
    * Le choix est le même que celui d'un joueur devant la rangée : on essaie
    * les dix nombres, on regarde OÙ chacun mène — et l'on prend celui qui
    * pose le pion sur la meilleure case. L'étoile emporte tout quand elle
-   * est payable ; sinon on vise les pièces et l'on fuit le roi Koopa.
+   * est payable ; sinon on vise les pièces et l'on fuit le roi Dragon.
    */
   C.chooseDiceValue = function (bs, playerIndex) {
     const S = MP.State;
@@ -45953,7 +46016,7 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
     if (Math.random() > skill) return 1 + Math.floor(Math.random() * 10);
 
     const landing = { blue: 2.2, star: 0, happening: 0.8, chance: 0.6, mushroom: 1.6,
-      shop: 1.4, bonus: 1.8, boo: 1.0, red: -2.6, koopa: -5.0, start: 1.2 };
+      shop: 1.4, bonus: 1.8, fantome: 1.0, red: -2.6, dragon: -5.0, start: 1.2 };
     let best = 1, bestScore = -1e9;
     for (let n = 1; n <= 10; n++) {
       // On suit le chemin case par case ; aux embranchements on prend la
@@ -46057,15 +46120,15 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
   };
 
   /* =====================================================================
-     La case Boo
+     La case Fantôme
      ---------------------------------------------------------------------
      Deux décisions, prises par l'hôte comme celles des objets : quel marché
      conclure, puis qui plumer. Les cartes grisées ne sont jamais choisies —
      la sur-couche les refuserait de toute façon.
      ===================================================================== */
 
-  /** Quel marché conclure avec Boo ? Renvoie l'indice dans `deals`. */
-  C.chooseBooDeal = function (bs, playerIndex, deals) {
+  /** Quel marché conclure avec le Fantôme ? Renvoie l'indice dans `deals`. */
+  C.chooseFantomeDeal = function (bs, playerIndex, deals) {
     const S = MP.State;
     const p = S.players[playerIndex];
     const others = S.players.filter((q) => q !== p);
@@ -46090,7 +46153,7 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
   };
 
   /** Qui plumer ? Renvoie l'indice dans `targets` (la dernière = au hasard). */
-  C.chooseBooTarget = function (bs, playerIndex, deal, targets) {
+  C.chooseFantomeTarget = function (bs, playerIndex, deal, targets) {
     const p = MP.State.players[playerIndex];
     const skill = [0.3, 0.75, 1.0][p.cpuLevel] || 0.75;
     const rnd = targets.length - 1;
@@ -46106,7 +46169,7 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
       // alors le classement qui départage.
       const score = deal.id === 'star'
         ? q.stars * 10 + q.coins * 0.02
-        : Math.min(q.coins, MP.Spaces.BOO_COINS) * 10 + q.stars * 3 + q.coins * 0.02;
+        : Math.min(q.coins, MP.Spaces.FANTOME_COINS) * 10 + q.stars * 3 + q.coins * 0.02;
       if (score > bestScore) { bestScore = score; best = i; }
     });
     return best >= 0 ? best : rnd;
@@ -46182,7 +46245,7 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
       this.time = 0;
 
       this.dialog = null;
-      this.overlay = null;        // sur-couche graphique (hasard, koopa, étoile…)
+      this.overlay = null;        // sur-couche graphique (hasard, dragon, étoile…)
       this.diceUp = false;        // un bloc de dé occupe le dessus de la tête
       this.trapMarks = {};        // marques des pièges, par numéro de case
       this.spaceLabel = null;
@@ -46338,10 +46401,10 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
         });
       });
 
-      // Les fantômes des cases Boo, posés par `buildTrack` : ils flottent et
+      // Les fantômes des cases Fantôme, posés par `buildTrack` : ils flottent et
       // se dandinent, chacun sur son propre rythme pour ne pas battre la
       // mesure ensemble.
-      const ghosts = this.root.userData.booGhosts || [];
+      const ghosts = this.root.userData.fantomeGhosts || [];
       const ghostY = ghosts.map((gh) => gh.position.y);
       if (ghosts.length) {
         this.animate((t) => {
@@ -46843,7 +46906,7 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
       await this.tween(0.35, (k) => {
         blocks.forEach((b) => { b.position.y += 0.14; b.scale.setScalar(1 - k); });
       });
-      blocks.forEach((b) => { this.root.remove(b); if (b.userData.numTex) b.userData.numTex.dispose(); });
+      blocks.forEach((b) => { this.root.remove(b); if (b.userData.dispose) b.userData.dispose(); });
       this.anims.splice(this.anims.indexOf(spin), 1);
       this.diceUp = false;
     }
@@ -47346,83 +47409,83 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
       return d;
     }
 
-    /* ------------------------------------------------------------ Boo */
+    /* ------------------------------------------------------------ Fantôme */
 
-    /** Boo surgit derrière un joueur et lui prend des pièces. */
-    async booSteal(thief, victim, amount) {
+    /** Le Fantôme surgit derrière un joueur et lui prend des pièces. */
+    async fantomeSteal(thief, victim, amount) {
       const n = Math.min(amount, victim.coins);
       const va = this.actors[victim.index];
-      if (!this.boo) {
-        this.boo = P.ghost(1.3);
-        this.root.add(this.boo);
+      if (!this.fantome) {
+        this.fantome = P.ghost(1.3);
+        this.root.add(this.fantome);
       }
-      this.boo.visible = true;
+      this.fantome.visible = true;
       const from = new THREE.Vector3(va.root.position.x, va.root.position.y + 3.6, va.root.position.z - 2.4);
-      this.boo.position.copy(from);
-      MP.Audio.play('boo');
+      this.fantome.position.copy(from);
+      MP.Audio.play('fantome');
       this._focus(victim.index);
       await this.tween(0.7, (k) => {
-        this.boo.position.lerpVectors(from, va.root.position.clone().add(new THREE.Vector3(0, 1.5, 0.9)), U.ease.outCubic(k));
+        this.fantome.position.lerpVectors(from, va.root.position.clone().add(new THREE.Vector3(0, 1.5, 0.9)), U.ease.outCubic(k));
       });
       va.play('sad', { once: true, dur: 0.9, then: 'idle', restart: true });
-      await this.awardCoins(victim, -n, 'Boo passe par là...');
+      await this.awardCoins(victim, -n, 'Le Fantôme passe par là...');
       MP.Audio.play('laugh');
       await this.awardCoins(thief, n, 'Pièces volées !');
       MP.Audio.play('vanish');
       await this.tween(0.5, (k) => {
-        this.boo.scale.setScalar(1 - k);
-        this.boo.position.y += 0.05;
+        this.fantome.scale.setScalar(1 - k);
+        this.fantome.position.y += 0.05;
       });
-      this.boo.visible = false;
-      this.boo.scale.setScalar(1);
+      this.fantome.visible = false;
+      this.fantome.scale.setScalar(1);
       this._focus(thief.index);
     }
 
     /** Le fantôme surgit auprès d'un joueur, pour lui parler. */
-    async _booEnter(p) {
+    async _fantomeEnter(p) {
       const a = this.actors[p.index];
-      if (!this.boo) {
-        this.boo = P.ghost(1.3);
-        this.root.add(this.boo);
+      if (!this.fantome) {
+        this.fantome = P.ghost(1.3);
+        this.root.add(this.fantome);
       }
-      this.boo.visible = true;
-      this.boo.scale.setScalar(1);
+      this.fantome.visible = true;
+      this.fantome.scale.setScalar(1);
       const from = new THREE.Vector3(a.root.position.x, a.root.position.y + 4.4, a.root.position.z - 2.6);
       const to = a.root.position.clone().add(new THREE.Vector3(0, 1.6, 1.2));
-      this.boo.position.copy(from);
-      MP.Audio.play('boo');
+      this.fantome.position.copy(from);
+      MP.Audio.play('fantome');
       this._focus(p.index);
-      await this.tween(0.7, (k) => { this.boo.position.lerpVectors(from, to, U.ease.outCubic(k)); });
+      await this.tween(0.7, (k) => { this.fantome.position.lerpVectors(from, to, U.ease.outCubic(k)); });
     }
 
     /** ...et s'efface. Sans effet s'il n'est déjà plus là. */
-    async _booExit() {
-      if (!this.boo || !this.boo.visible) return;
+    async _fantomeExit() {
+      if (!this.fantome || !this.fantome.visible) return;
       MP.Audio.play('vanish');
       await this.tween(0.5, (k) => {
-        this.boo.scale.setScalar(1 - k);
-        this.boo.position.y += 0.05;
+        this.fantome.scale.setScalar(1 - k);
+        this.fantome.position.y += 0.05;
       });
-      this.boo.visible = false;
-      this.boo.scale.setScalar(1);
+      this.fantome.visible = false;
+      this.fantome.scale.setScalar(1);
     }
 
-    /** Boo emporte une étoile — le vol qui se paie d'avance. */
-    async booStealStar(thief, victim) {
+    /** Le Fantôme emporte une étoile — le vol qui se paie d'avance. */
+    async fantomeStealStar(thief, victim) {
       const va = this.actors[victim.index];
       const ta = this.actors[thief.index];
-      if (!this.boo) {
-        this.boo = P.ghost(1.3);
-        this.root.add(this.boo);
+      if (!this.fantome) {
+        this.fantome = P.ghost(1.3);
+        this.root.add(this.fantome);
       }
-      this.boo.visible = true;
-      this.boo.scale.setScalar(1);
+      this.fantome.visible = true;
+      this.fantome.scale.setScalar(1);
       const from = new THREE.Vector3(va.root.position.x, va.root.position.y + 3.6, va.root.position.z - 2.4);
       const near = va.root.position.clone().add(new THREE.Vector3(0, 1.5, 0.9));
-      this.boo.position.copy(from);
-      MP.Audio.play('boo');
+      this.fantome.position.copy(from);
+      MP.Audio.play('fantome');
       this._focus(victim.index);
-      await this.tween(0.7, (k) => { this.boo.position.lerpVectors(from, near, U.ease.outCubic(k)); });
+      await this.tween(0.7, (k) => { this.fantome.position.lerpVectors(from, near, U.ease.outCubic(k)); });
       va.play('sad', { once: true, dur: 1.2, then: 'idle', restart: true });
 
       victim.stars--;
@@ -47443,7 +47506,7 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
         star.position.lerpVectors(a0, a1, U.ease.inOutCubic(k));
         star.position.y += Math.sin(k * Math.PI) * 1.6;
         star.rotation.y += 0.3;
-        this.boo.position.set(star.position.x, star.position.y + 1.0, star.position.z - 0.7);
+        this.fantome.position.set(star.position.x, star.position.y + 1.0, star.position.z - 0.7);
       });
       this.root.remove(star);
       this.spaceLabel = null;
@@ -47454,16 +47517,16 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
       this.float3('+1★', ta.root.position.x, ta.root.position.y + 2.6, ta.root.position.z, { color: '#fff2a0' });
       this._coinBurst(a1.x, a1.y, a1.z, 14);
       await this.wait(1.2);
-      await this._booExit();
+      await this._fantomeExit();
       this._focus(thief.index);
     }
 
     /* =================================================================
-       Case Boo : le marché du fantôme
+       Case Fantôme : le marché du fantôme
        ================================================================= */
 
     /**
-     * Boo propose deux marchés — dix pièces, ou une étoile contre cinquante
+     * Le Fantôme propose deux marchés — dix pièces, ou une étoile contre cinquante
      * pièces payées d'avance — puis le joueur DÉSIGNE lui-même sa victime.
      * La dernière carte, « AU HASARD », s'en remet au fantôme : c'est le
      * seul tirage au sort de la scène, et il passe par `netRandom` pour que
@@ -47473,19 +47536,19 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
      * personne à plumer — restent affichés, grisés : on voit ce qu'on rate,
      * comme au rayon de la boutique.
      */
-    async booEvent(p) {
+    async fantomeEvent(p) {
       const Sp = MP.Spaces;
       const idx = p.index;
       const others = S.players.filter((q) => q !== p);
 
-      await this._booEnter(p);
+      await this._fantomeEnter(p);
       await this.say('Hihihi... Je vole ce que tu veux, à qui tu veux. Alors ?',
-        { speaker: 'Boo', color: '#7050a0', player: idx });
+        { speaker: 'Fantôme', color: '#7050a0', player: idx });
 
       // --- premier choix : que voler ? ----------------------------------
-      const deals = Sp.booDeals.map((d) => ({
+      const deals = Sp.fantomeDeals.map((d) => ({
         id: d.id, label: d.label, desc: d.desc, price: d.price, color: d.color,
-        ok: Sp.booDealOk(d, p, others),
+        ok: Sp.fantomeDealOk(d, p, others),
       }));
       deals.push({
         id: 'none', label: 'PARTIR', desc: 'Repartir les mains vides.',
@@ -47494,25 +47557,25 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
       const leave = deals.length - 1;
 
       this.overlay = {
-        kind: 'boo', player: idx, t: 0, phase: 0, sel: 0, list: deals,
+        kind: 'fantome', player: idx, t: 0, phase: 0, sel: 0, list: deals,
         locked: false, deal: null, rolled: -1,
       };
       MP.Audio.play('appear');
-      const dealPick = await this._booPick(p, 'booDeal', leave, leave,
-        () => MP.BoardCPU.chooseBooDeal(this, idx, deals));
+      const dealPick = await this._fantomePick(p, 'fantomeDeal', leave, leave,
+        () => MP.BoardCPU.chooseFantomeDeal(this, idx, deals));
       const deal = deals[dealPick];
 
       if (deal.id === 'none') {
         this.overlay = null;
-        await this._booExit();
+        await this._fantomeExit();
         await this.say('Tant pis pour toi... Hihihi !',
-          { speaker: 'Boo', color: '#7050a0', auto: 1.2 });
+          { speaker: 'Fantôme', color: '#7050a0', auto: 1.2 });
         return;
       }
 
       // --- second choix : à qui ? ---------------------------------------
       const targets = others.map((q) => ({
-        id: 'p' + q.index, player: q, ok: Sp.booTargetOk(deal, q),
+        id: 'p' + q.index, player: q, ok: Sp.fantomeTargetOk(deal, q),
       }));
       targets.push({ id: 'random', player: null, ok: targets.some((t) => t.ok) });
       const rndIndex = targets.length - 1;
@@ -47520,8 +47583,8 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
       this.overlay.phase = 1;
       this.overlay.list = targets;
       this.overlay.deal = deal;
-      const aim = await this._booPick(p, 'booTarget', rndIndex, -1,
-        () => MP.BoardCPU.chooseBooTarget(this, idx, deal, targets));
+      const aim = await this._fantomePick(p, 'fantomeTarget', rndIndex, -1,
+        () => MP.BoardCPU.chooseFantomeTarget(this, idx, deal, targets));
 
       let victim = targets[aim].player;
       if (!victim) {
@@ -47529,7 +47592,7 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
         // Le vivier n'est jamais vide (un marché sans personne à plumer n'est
         // pas proposé), mais on ne joue pas là-dessus.
         const pool = targets.filter((t) => t.player && t.ok);
-        const r = await this.netRandom('booRand');
+        const r = await this.netRandom('fantomeRand');
         victim = pool.length
           ? pool[U.clamp(Math.floor(r * pool.length), 0, pool.length - 1)].player
           : others[0];
@@ -47540,23 +47603,23 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
       this.overlay = null;
 
       // --- le marché est conclu -----------------------------------------
-      await this._booExit();
+      await this._fantomeExit();
       if (deal.id === 'star') {
-        await this.awardCoins(p, -Sp.BOO_STAR_PRICE, 'Le prix du fantôme...');
-        await this.booStealStar(p, victim);
+        await this.awardCoins(p, -Sp.FANTOME_STAR_PRICE, 'Le prix du fantôme...');
+        await this.fantomeStealStar(p, victim);
       } else {
-        await this.booSteal(p, victim, Sp.BOO_COINS);
+        await this.fantomeSteal(p, victim, Sp.FANTOME_COINS);
       }
     }
 
     /**
-     * Une carte choisie dans la sur-couche de Boo.
+     * Une carte choisie dans la sur-couche du Fantôme.
      *   `fallback` : valeur retenue si le propriétaire quitte le salon.
      *   `cancelTo` : carte sur laquelle B se rabat, ou -1 pour ignorer B.
      * Les cartes grisées se survolent mais ne se valident pas — le rayon de
      * la boutique fonctionne déjà ainsi.
      */
-    async _booPick(p, key, fallback, cancelTo, cpuFn) {
+    async _fantomePick(p, key, fallback, cancelTo, cpuFn) {
       const ov = this.overlay;
       const idx = p.index;
       ov.sel = 0;
@@ -47817,37 +47880,37 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
       MP.Audio.playMusic(this.board.music || 'board_jungle', { restart: true });
     }
 
-    /* ------------------------------------------------------------ Koopa */
+    /* ------------------------------------------------------------ Dragon */
 
-    async koopaEvent(p) {
-      MP.Audio.playMusic('koopa_event', { restart: true, fadeIn: 0.05 });
-      MP.Audio.play('koopa');
+    async dragonEvent(p) {
+      MP.Audio.playMusic('dragon_event', { restart: true, fadeIn: 0.05 });
+      MP.Audio.play('dragon');
       E.shake(0.4, 0.8);
 
-      // apparition du roi Koopa
-      if (!this.koopa) {
-        this.koopa = P.koopaKing(1.5, false);
-        this.root.add(this.koopa);
+      // apparition du roi Dragon
+      if (!this.dragon) {
+        this.dragon = P.dragonKing(1.5, false);
+        this.root.add(this.dragon);
       }
       const a = this.actors[p.index];
-      this.koopa.visible = true;
-      this.koopa.position.set(a.root.position.x, a.root.position.y - 6, a.root.position.z - 3.5);
-      this.koopa.rotation.y = Math.PI;
-      this.koopa.lookAt(a.root.position.x, this.koopa.position.y, a.root.position.z);
+      this.dragon.visible = true;
+      this.dragon.position.set(a.root.position.x, a.root.position.y - 6, a.root.position.z - 3.5);
+      this.dragon.rotation.y = Math.PI;
+      this.dragon.lookAt(a.root.position.x, this.dragon.position.y, a.root.position.z);
       await this.tween(0.8, (k) => {
-        this.koopa.position.y = a.root.position.y - 6 + 6 * U.ease.outBack(k);
+        this.dragon.position.y = a.root.position.y - 6 + 6 * U.ease.outBack(k);
       });
       MP.Audio.play('laugh');
       a.play('sad', { restart: true });
 
-      const evId = await this.netDecide('koopa', -1, () => MP.Spaces.pickKoopaEvent().id);
-      const ev = MP.Spaces.koopaEvents.filter((e) => e.id === evId)[0] || MP.Spaces.koopaEvents[0];
+      const evId = await this.netDecide('dragon', -1, () => MP.Spaces.pickDragonEvent().id);
+      const ev = MP.Spaces.dragonEvents.filter((e) => e.id === evId)[0] || MP.Spaces.dragonEvents[0];
       await this.flashSpaceLabel(ev.title, '#ff5030', 1.8);
-      await this.say(ev.line, { speaker: 'Roi Koopa', color: '#c02020', auto: 1.6 });
+      await this.say(ev.line, { speaker: 'Roi Dragon', color: '#c02020', auto: 1.6 });
 
       if (ev.minigame) {
         // mini-jeu punitif : le joueur seul contre le sort
-        const mgId = await this.netDecide('koopaMg', -1, () => {
+        const mgId = await this.netDecide('dragonMg', -1, () => {
           const m = MP.Minigames.pick('solo', S.minigameHistory);
           return m ? m.id : null;
         });
@@ -47869,7 +47932,7 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
       } else {
         const r = ev.apply(this, p);
         if (r.none) {
-          await this.say(r.line, { speaker: 'Roi Koopa', color: '#c02020', auto: 1.4 });
+          await this.say(r.line, { speaker: 'Roi Dragon', color: '#c02020', auto: 1.4 });
         } else if (r.revolution) {
           r.revolution.forEach((d, i) => {
             if (!d) return;
@@ -47893,9 +47956,9 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
 
       MP.Audio.play('vanish');
       await this.tween(0.6, (k) => {
-        this.koopa.position.y = a.root.position.y - 6 * k;
+        this.dragon.position.y = a.root.position.y - 6 * k;
       });
-      this.koopa.visible = false;
+      this.dragon.visible = false;
       MP.Audio.playMusic(this.board.music || 'board_jungle', { restart: true });
     }
 
@@ -47909,7 +47972,7 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
       // pas les mêmes équipes.
       const colors = await this.netDecide('teams', -1, () => S.players.map((p) => {
         if (p.lastSpaceType === 'blue' || p.lastSpaceType === 'start') return 0;
-        if (p.lastSpaceType === 'red' || p.lastSpaceType === 'koopa') return 1;
+        if (p.lastSpaceType === 'red' || p.lastSpaceType === 'dragon') return 1;
         return Math.random() < 0.5 ? 0 : 1;
       }));
       const n = S.players.length;
@@ -48455,8 +48518,8 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
         if (op.leftP || op.downP) { ov.sel = (ov.sel + 9) % 10; MP.Audio.play('move'); }
         if (op.rightP || op.upP) { ov.sel = (ov.sel + 1) % 10; MP.Audio.play('move'); }
       }
-      if (ov && ov.kind === 'boo' && !ov.locked) {
-        // le marché de Boo : une rangée de cartes, curseur horizontal
+      if (ov && ov.kind === 'fantome' && !ov.locked) {
+        // le marché du Fantôme : une rangée de cartes, curseur horizontal
         const op = this.padFor(ov.player);
         const n = ov.list.length;
         if (op.leftP || op.upP) { ov.sel = (ov.sel + n - 1) % n; MP.Audio.play('move'); }
@@ -48714,7 +48777,7 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
 
     _drawMapLegend(g) {
       const W = E.W, H = E.H;
-      const keys = ['blue', 'red', 'happening', 'chance', 'mushroom', 'shop', 'bonus', 'boo', 'koopa', 'star'];
+      const keys = ['blue', 'red', 'happening', 'chance', 'mushroom', 'shop', 'bonus', 'fantome', 'dragon', 'star'];
       const bw = 150, bh = keys.length * 26 + 20;
       MP.UI.panel(g, 14, H / 2 - bh / 2, bw, bh, {
         fill: 'rgba(16,22,58,0.86)', fill2: 'rgba(8,12,32,0.9)', border: '#ffffff', borderW: 2, radius: 10, gloss: false,
@@ -48741,7 +48804,7 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
       else if (o.kind === 'dice') this._drawDiceOverlay(g, o);
       else if (o.kind === 'shop') this._drawShopOverlay(g, o);
       else if (o.kind === 'bonus') this._drawBonusOverlay(g, o);
-      else if (o.kind === 'boo') this._drawBooOverlay(g, o);
+      else if (o.kind === 'fantome') this._drawFantomeOverlay(g, o);
     }
 
     /** Le sac ouvert avant le lancer : une carte par objet, plus « Passer ». */
@@ -48918,11 +48981,11 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
     }
 
     /**
-     * Le marché de Boo : une rangée de cartes, la même dans les deux temps
+     * Le marché du Fantôme : une rangée de cartes, la même dans les deux temps
      * du choix — d'abord ce qu'on vole, puis à qui. Les cartes hors de
      * portée restent affichées, grisées.
      */
-    _drawBooOverlay(g, o) {
+    _drawFantomeOverlay(g, o) {
       const W = E.W, H = E.H;
       const p = S.players[o.player];
       const list = o.list;
@@ -48930,7 +48993,7 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
       g.fillStyle = 'rgba(4,0,16,0.66)'; g.fillRect(0, 0, W, H);
       MP.UI.sunburst(g, W / 2, H / 2, W, -this.time * 0.25,
         'rgba(180,150,255,0.11)', 'rgba(180,150,255,0.03)', 16);
-      MP.UI.text(g, target ? 'À QUI ?' : 'LE MARCHÉ DE BOO', W / 2, H * 0.13, {
+      MP.UI.text(g, target ? 'À QUI ?' : 'LE MARCHÉ DU FANTÔME', W / 2, H * 0.13, {
         size: 40, width: 8, gradient: ['#ffffff', '#d8caff', '#7a5ac0'], outline: '#2a1050',
       });
 
@@ -48939,7 +49002,7 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
       MP.UI.text(g, '×' + p.coins, W / 2 - 24, H * 0.20 + 1,
         { size: 24, align: 'left', color: '#ffe680', width: 3.5 });
       if (target) {
-        MP.UI.text(g, 'BOO VOLE : ' + o.deal.label, W / 2, H * 0.26,
+        MP.UI.text(g, 'LE FANTÔME VOLE : ' + o.deal.label, W / 2, H * 0.26,
           { size: 20, color: o.deal.color, width: 3.5 });
       }
 
@@ -49007,9 +49070,9 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
         else if (sel.player) {
           note = o.deal.id === 'star'
             ? (sel.ok ? sel.player.name + ' a une étoile à perdre...' : sel.player.name + ' n\'a aucune étoile.')
-            : 'Boo ira faire les poches de ' + sel.player.name + '.';
+            : 'Le Fantôme ira faire les poches de ' + sel.player.name + '.';
         } else {
-          note = 'Boo choisira lui-même sa victime.';
+          note = 'Le Fantôme choisira lui-même sa victime.';
         }
         MP.UI.wrapText(g, note, W / 2, cy + cw * 0.72, 640,
           { size: 18, color: sel.ok ? '#d8c8ff' : '#ff9c9c', width: 0, shadow: false });
@@ -49476,7 +49539,8 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
         g.restore();
         MP.UI.text(g, MP.Input.gamepadCount() > 0
           ? MP.Input.gamepadCount() + ' manette(s) détectée(s)'
-          : 'Clavier partagé — jusqu\'à 6 joueurs',
+          : (MP.Input.touchActive() ? 'Écran tactile — manette à l\'écran pour le joueur 1'
+            : 'Clavier partagé — jusqu\'à 6 joueurs'),
         W / 2, H * 0.74 + 38, { size: 15, color: '#a8c0f0', width: 2.5 });
       }
 
@@ -51114,7 +51178,7 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
   MP.Screens = MP.Screens || {};
 
   const RES_LABELS = [
-    { v: 0.5, label: '240p (N64 d\'origine)' },
+    { v: 0.5, label: '240p (rétro)' },
     { v: 0.75, label: '360p' },
     { v: 1, label: '480p (recommandé)' },
     { v: 1.5, label: '720p' },
@@ -51205,12 +51269,83 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
           help: 'Accélère les phases où l\'ordinateur joue.',
         },
         {
+          id: 'touch', label: 'Manette tactile (joueur 1)',
+          get: () => {
+            const m = S.settings.touchPad || 'auto';
+            if (m === 'on') return 'Affichée';
+            if (m === 'off') return 'Masquée';
+            return MP.Input.touchActive() ? 'Auto (affichée)' : 'Auto (masquée)';
+          },
+          left: () => this._cycleTouch(-1),
+          right: () => this._cycleTouch(1),
+          // Ce réglage-là s'enregistre lui-même, une fois confirmé.
+          persist: false,
+          help: 'Sur téléphone ou tablette, le joueur 1 joue avec une manette semi-transparente '
+            + 'posée sur l\'écran. « Auto » la montre dès qu\'un écran tactile est détecté.',
+        },
+        {
           id: 'fps', label: 'Compteur d\'images',
           get: () => (S.settings.showFps ? 'Affiché' : 'Masqué'),
           left: () => this._toggle('showFps'),
           right: () => this._toggle('showFps'),
         },
       ];
+    },
+
+    /** Nom court d'un mode, tel que la boîte de confirmation le cite. */
+    _touchLabel(mode) {
+      return ({ on: 'Affichée', off: 'Masquée' })[mode] || 'Automatique';
+    },
+
+    /**
+     * Sur un écran tactile, ce réglage change le seul moyen de jouer : le
+     * nouveau mode s'applique aussitôt — il faut le voir pour en juger —
+     * mais n'est enregistré qu'une fois confirmé. Sans réponse, le compte à
+     * rebours de la boîte ramène l'ancien : une fausse manœuvre ne peut donc
+     * pas laisser un téléphone sans commandes. Et de toute façon, le mode
+     * repart sur « Auto » au prochain lancement (cf. MP.State.loadSave).
+     */
+    _cycleTouch(dir) {
+      const modes = ['auto', 'on', 'off'];
+      let i = modes.indexOf(S.settings.touchPad);
+      if (i < 0) i = 0;
+      const before = modes[i];
+      S.settings.touchPad = modes[(i + dir + modes.length) % modes.length];
+      MP.Audio.play('select');
+      if (!this._askTouch(before)) S.persist();
+    },
+
+    /**
+     * Demande de garder le mode qui vient d'être appliqué — seulement là où
+     * il se voit, c'est-à-dire sur un écran tactile. Renvoie vrai si la
+     * question est posée.
+     *
+     * Le bouton « Garder » se tape au doigt, sauf quand le nouveau mode range
+     * la manette tactile alors qu'aucune manette n'est branchée : ce
+     * réglage-là ne laisserait plus rien pour jouer, et on ne le confirme pas
+     * du doigt qu'il supprime. Seul un vrai appui sur A — clavier ou manette
+     * — le garde alors ; sinon le compte à rebours rend la main.
+     */
+    _askTouch(before) {
+      const T = MP.Input.touch;
+      if (!T || !T.touchDevice()) return false;
+      const stuck = T.visible && !T.wanted() && MP.Input.pad(0).gamepadIndex < 0;
+      return T.ask({
+        title: 'GARDER CE RÉGLAGE ?',
+        value: 'Manette tactile : ' + this._touchLabel(S.settings.touchPad),
+        note: stuck
+          ? 'Sans manette branchée, ce mode ne vous laisse aucune commande : '
+            + 'il ne peut être confirmé qu\'au clavier ou à la manette (bouton A).'
+          // Le mode retenu ne vaut que pour la séance : autant le dire ici,
+          // c'est le seul endroit où le joueur pose la question.
+          : (S.settings.touchPad === 'auto' ? ''
+            : 'Ce choix vaut pour la séance : au prochain lancement, la manette repart sur Auto.'),
+        back: this._touchLabel(before),
+        seconds: 10,
+        tapKeep: !stuck,
+        onKeep: () => { S.persist(); MP.Audio.play('confirm'); },
+        onRevert: () => { S.settings.touchPad = before; S.persist(); MP.Audio.play('cancel'); },
+      });
     },
 
     _toggle(k) { S.settings[k] = !S.settings[k]; S.applySettings(); S.persist(); MP.Audio.play('select'); },
@@ -51253,6 +51388,17 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
       if (!this.fromPause) MP.Screens.menuBg.update(dt, { spinSpeed: 0.05, dist: 18, height: 6.5 });
 
       const pad = MP.Input.any;
+
+      // Une confirmation en attente prend toute la main : A la garde, B revient
+      // en arrière, et rien d'autre ne bouge tant qu'elle est là. C'est ce qui
+      // permet de confirmer au bouton A de la manette tactile elle-même.
+      const T = MP.Input.touch;
+      if (T && T.asking()) {
+        if (pad.aP || pad.startP) T.answer(true);
+        else if (pad.bP) T.answer(false);
+        return;
+      }
+
       if (pad.rP) { this.tab = 1 - this.tab; MP.Audio.play('select'); }
       if (pad.bP) { MP.Audio.play('cancel'); S.persist(); MP.Game.pop(); return; }
 
@@ -51261,9 +51407,18 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
       if (pad.upP) { this.sel = (this.sel + this.items.length - 1) % this.items.length; MP.Audio.play('move'); }
       if (pad.downP) { this.sel = (this.sel + 1) % this.items.length; MP.Audio.play('move'); }
       const it = this.items[this.sel];
-      if (pad.leftP && it.left) { it.left(); S.persist(); }
-      if (pad.rightP && it.right) { it.right(); S.persist(); }
-      if (pad.aP && it.right) { it.right(); S.persist(); }
+      // `persist: false` : le réglage attend une confirmation et s'enregistre
+      // lui-même — l'écrire ici le rendrait acquis avant la réponse.
+      const apply = (fn) => { fn(); if (it.persist !== false) S.persist(); };
+      if (pad.leftP && it.left) apply(it.left);
+      if (pad.rightP && it.right) apply(it.right);
+      if (pad.aP && it.right) apply(it.right);
+    },
+
+    /** Une confirmation encore en attente revient en arrière en sortant. */
+    exit() {
+      const T = MP.Input.touch;
+      if (T && T.asking()) T.answer(false);
     },
 
     drawHud(g) {
@@ -51359,8 +51514,9 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
         });
         MP.UI.text(g, 'JOUEUR ' + (i + 1), x + w / 2, y + 22, { size: 18, color: '#ffd11a', width: 3.5 });
         const connected = MP.Input.pad(i).gamepadIndex >= 0;
-        MP.UI.text(g, connected ? 'Manette connectée' : 'Clavier', x + w / 2, y + 42,
-          { size: 12, color: connected ? '#8affa0' : '#a8c0f0', width: 0, shadow: false });
+        const touch = i === 0 && !connected && MP.Input.touchActive();
+        MP.UI.text(g, connected ? 'Manette connectée' : (touch ? 'Manette tactile' : 'Clavier'), x + w / 2, y + 42,
+          { size: 12, color: connected || touch ? '#8affa0' : '#a8c0f0', width: 0, shadow: false });
         MP.Input.keyList(i).forEach((kv, k) => {
           const ky = y + 66 + k * 23;
           MP.UI.text(g, kv[0], x + 14, ky, { size: 13, align: 'left', color: '#c8d8ff', width: 0, shadow: false });
@@ -54772,11 +54928,11 @@ console.warn( 'Scripts "build/three.js" and "build/three.min.js" are deprecated 
 
 
 <script>
-window.MP_BUILD = { version: '1.8.0', date: '2026-09-03 16:50', single: true };
+window.MP_BUILD = { version: '1.13.0', date: '2026-09-04 17:44', single: true };
 (function () {
   function tag() {
     var d = document.createElement('div');
-    d.textContent = 'v1.8.0';
+    d.textContent = 'v1.13.0';
     d.style.cssText = 'position:absolute;right:8px;bottom:6px;z-index:100;' +
                       'font:11px/1 monospace;color:#54628c;pointer-events:none';
     document.body.appendChild(d);
